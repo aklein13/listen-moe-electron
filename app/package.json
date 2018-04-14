@@ -1,0 +1,18 @@
+{
+  "name": "listen-moe-electron",
+  "productName": "ListenMoeElectron",
+  "version": "1.0.0",
+  "description": "Listen.moe electrion client build in React",
+  "main": "./main.prod.js",
+  "author": {
+    "name": "Akane",
+    "email": "arek.klein@gmail.com",
+    "url": "https://github.com/aklein13"
+  },
+  "scripts": {
+    "electron-rebuild": "node -r babel-register ../internals/scripts/ElectronRebuild.js",
+    "postinstall": "npm run electron-rebuild"
+  },
+  "license": "MIT",
+  "dependencies": {}
+}

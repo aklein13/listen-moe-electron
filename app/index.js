@@ -3,7 +3,10 @@ import {render} from 'react-dom';
 import {AppContainer} from 'react-hot-loader';
 import Root from './containers/Root';
 import {configureStore, history} from './store/configureStore';
+import {playPause} from './actions/player';
 import './app.global.scss';
+import Client from 'electron-rpc/client';
+const client = new Client();
 
 const store = configureStore();
 
@@ -25,3 +28,7 @@ if (module.hot) {
     );
   });
 }
+
+client.on('media_play', (err, body) => {
+  store.dispatch(playPause());
+});

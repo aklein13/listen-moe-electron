@@ -1,5 +1,6 @@
 // @flow
 import {app, Menu, shell, BrowserWindow, globalShortcut} from 'electron';
+import Server from 'electron-rpc/server';
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
@@ -19,7 +20,10 @@ export default class MenuBuilder {
 
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
+    const server = new Server();
+    server.configure(this.mainWindow.webContents);
     var registered = globalShortcut.register('mediaplaypause', function () {
+      server.send('media_play', 'some arguments');
       console.log('mediaplaypause pressed');
     });
     if (!registered) {

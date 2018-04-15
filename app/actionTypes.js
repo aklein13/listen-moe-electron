@@ -1,5 +1,6 @@
 export const ACTIONS = {
   PLAY_PAUSE: 'play_pause',
+  SET_SONG: 'set_current_song',
 };
 
 export const JP_STREAM = 'https://listen.moe/stream';

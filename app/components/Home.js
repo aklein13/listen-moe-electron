@@ -12,7 +12,8 @@ type Props = {
 
 class Home extends Component<Props> {
   props: Props;
-  componentWillMount(){
+
+  componentWillMount() {
     this.props.initWs();
   }
 
@@ -24,7 +25,7 @@ class Home extends Component<Props> {
     )
   }
 
-  renderAudioPlayer(){
+  renderAudioPlayer() {
     const {playerType} = this.props;
     const streamUrl = playerType === 'KR' ? KR_STREAM : JP_STREAM;
     return (
@@ -32,14 +33,24 @@ class Home extends Component<Props> {
     );
   }
 
+  renderSongInfo(song) {
+    return (
+      <div>
+        <h2>Title: {song.title}</h2>
+        <h2>Subtitle: {song.subTitle}</h2>
+        {song.requester && <h2>Requested by: {song.requester}</h2>}
+      </div>
+    )
+  }
+
   render() {
-    console.log(this.props.isPlaying);
-    const {isPlaying} = this.props;
+    const {isPlaying, currentSong} = this.props;
     return (
       <div>
         <div className="container" data-tid="container">
-          <h2>Home</h2>
           {isPlaying && this.renderAudioPlayer()}
+          <br/>
+          {currentSong && this.renderSongInfo(currentSong)}
           <Link to="/counter">to Counter</Link>
           {this.renderPlayButton()}
         </div>
@@ -56,6 +67,7 @@ const mapDispatchToProps = {
 function mapStateToProps(state) {
   return {
     isPlaying: state.player.isPlaying,
+    currentSong: state.player.currentSong,
   };
 }
 

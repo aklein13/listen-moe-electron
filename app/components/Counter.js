@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import * as CounterActions from "../actions/counter";
+import * as CounterActions from '../actions/counter';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 

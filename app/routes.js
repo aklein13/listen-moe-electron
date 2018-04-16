@@ -1,14 +1,12 @@
 import React from 'react';
 import {Switch, Route} from 'react-router';
 import App from './containers/App';
-import Home from './components/Home';
-import Counter from './components/Counter';
+import Player from './components/Player';
 
 export default () => (
   <App>
     <Switch>
-      <Route path="/counter" component={Counter}/>
-      <Route path="/" component={Home}/>
+      <Route path="/" component={Player}/>
     </Switch>
   </App>
 );

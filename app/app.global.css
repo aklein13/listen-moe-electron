@@ -1,4 +1,7 @@
 @import url(~font-awesome/css/font-awesome.css);
+* {
+  box-sizing: border-box; }
+
 body {
   position: relative;
   color: white;

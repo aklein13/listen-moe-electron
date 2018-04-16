@@ -14,20 +14,16 @@ export const initWs = (type = 'JP') => {
         listenMoeWs.send(JSON.stringify({op: 9}));
       }, ms);
     };
-    console.log('WS INIT');
     listenMoeWs.onopen = () => {
       console.log('Websocket connection established.');
       listenMoeWs.send(JSON.stringify({ op: 0, d: { auth: '' } }));
     };
-
 
     listenMoeWs.onerror = (err) => {
       console.error(err);
     };
     listenMoeWs.onmessage = async (message) => {
       let response;
-      console.log(message);
-      console.log(typeof message);
       try {
         response = JSON.parse(message.data);
       }
@@ -35,7 +31,7 @@ export const initWs = (type = 'JP') => {
         console.warn(error, message.data);
         return;
       }
-      console.log('WSDATA', response);
+      //console.log('WSDATA', response);
       if (response.op === 0) {
         return setHeartbeat(response.d.heartbeat);
       }

@@ -1,6 +1,5 @@
 // @flow
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {playPause, initWs} from '../actions/player';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
@@ -10,7 +9,7 @@ type Props = {
   playPause: () => void,
 };
 
-class Home extends Component<Props> {
+class Player extends Component<Props> {
   props: Props;
 
   componentWillMount() {
@@ -51,7 +50,6 @@ class Home extends Component<Props> {
           {isPlaying && this.renderAudioPlayer()}
           <br/>
           {currentSong && this.renderSongInfo(currentSong)}
-          <Link to="/counter">to Counter</Link>
           {this.renderPlayButton()}
         </div>
       </div>
@@ -71,4 +69,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Player);

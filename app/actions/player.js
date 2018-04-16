@@ -31,7 +31,7 @@ export const initWs = (type = 'JP') => {
         console.warn(error, message.data);
         return;
       }
-      //console.log('WSDATA', response);
+      // console.log('WSDATA', response);
       if (response.op === 0) {
         return setHeartbeat(response.d.heartbeat);
       }

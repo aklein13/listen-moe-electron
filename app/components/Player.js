@@ -18,7 +18,7 @@ class Player extends Component<Props> {
 
   renderPlayButton() {
     const {isPlaying} = this.props;
-    const playerClass = `fa fa-${isPlaying ? 'pause' : 'play'}`;
+    const playerClass = `btn-pause-play fa fa-${isPlaying ? 'pause' : 'play'}`;
     return (
       <div className={playerClass} onClick={this.props.playPause}/>
     )
@@ -33,11 +33,20 @@ class Player extends Component<Props> {
   }
 
   renderSongInfo(song) {
+    if (!song) {
+      return (
+        <div className="song-info loading">
+          <p>Please wait...</p>
+        </div>
+      );
+    }
     return (
-      <div>
-        <h2>Title: {song.title}</h2>
-        <h2>Subtitle: {song.subTitle}</h2>
-        {song.requester && <h2>Requested by: {song.requester}</h2>}
+      <div className="song-info">
+        <h3>{song.subTitle}</h3>
+        <h2>{song.title}</h2>
+        {song.requester &&
+        <h2 className="requested">Requested by: {song.requester}</h2>
+        }
       </div>
     )
   }
@@ -45,13 +54,10 @@ class Player extends Component<Props> {
   render() {
     const {isPlaying, currentSong} = this.props;
     return (
-      <div>
-        <div className="container" data-tid="container">
-          {isPlaying && this.renderAudioPlayer()}
-          <br/>
-          {currentSong && this.renderSongInfo(currentSong)}
-          {this.renderPlayButton()}
-        </div>
+      <div className="player">
+        {isPlaying && this.renderAudioPlayer()}
+        {this.renderPlayButton()}
+        {this.renderSongInfo(currentSong)}
       </div>
     );
   }

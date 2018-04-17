@@ -2,15 +2,14 @@
 * {
   box-sizing: border-box;
   font-family: Arial, Helvetica, Helvetica Neue, serif;
-  font-size: 13px; }
+  font-size: 9px; }
 
 body {
   position: relative;
   color: white;
-  height: 100vh;
   background: #391c1e linear-gradient(45deg, rgba(255, 0, 7, 0.5) 10%, rgba(116, 0, 0, 0.7)) no-repeat;
   overflow-y: hidden;
-  max-height: 140px;
+  height: 70px;
   margin: 0; }
 
 h2 {
@@ -19,6 +18,10 @@ h2 {
   font-weight: bold;
   letter-spacing: -0.025em;
   color: #fff; }
+
+h3 {
+  margin: 0;
+  font-size: 1.67em; }
 
 .container {
   position: absolute;
@@ -31,6 +34,7 @@ h2 {
   height: 100%;
   width: 90%; }
   .player .btn-pause-play {
+    -webkit-app-region: no-drag;
     flex: 1;
     display: flex;
     align-items: center;
@@ -41,16 +45,20 @@ h2 {
     cursor: pointer;
     background-color: #740000; }
   .player .song-info {
+    -webkit-app-region: drag;
     flex: 4;
-    padding-left: 15px; }
+    padding: 5px; }
     .player .song-info .requested {
       position: absolute;
       bottom: 0;
       background-color: #740000;
       height: 2.7rem;
       text-align: center; }
+      .player .song-info .requested #title {
+        margin-top: 4px; }
 
 .settings {
+  -webkit-app-region: no-drag;
   width: 10%;
   height: 100%;
   display: inline-flex;

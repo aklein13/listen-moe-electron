@@ -43,9 +43,9 @@ class Player extends Component<Props> {
     return (
       <div className="song-info">
         <h3>{song.subTitle}</h3>
-        <h2>{song.title}</h2>
+        <h2 id="title">{song.title}</h2>
         {song.requester &&
-        <h2 className="requested">Requested by: {song.requester}</h2>
+        <h3 className="requested">Requested by: {song.requester}</h3>
         }
       </div>
     )

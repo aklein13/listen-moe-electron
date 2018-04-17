@@ -22,7 +22,7 @@ export default class MenuBuilder {
     Menu.setApplicationMenu(menu);
     const server = new Server();
     server.configure(this.mainWindow.webContents);
-    var registered = globalShortcut.register('mediaplaypause', function () {
+    globalShortcut.register('mediaplaypause', function () {
       server.send('media_play', 'some arguments');
       console.log('mediaplaypause pressed');
     });
@@ -31,7 +31,7 @@ export default class MenuBuilder {
     } else {
       console.log('mediaplaypause registration bound!');
     }
-    var registered = globalShortcut.register('mediastop', function () {
+    globalShortcut.register('mediastop', function () {
       console.log('mediastop pressed');
     });
     if (!registered) {

@@ -20,7 +20,9 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install();
 }
 
-if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
+
+if (isDebug) {
   require('electron-debug')();
   const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
@@ -53,16 +55,17 @@ app.on('window-all-closed', () => {
   }
 });
 
-
 app.on('ready', async () => {
-  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+  if (isDebug) {
     await installExtensions();
   }
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728
+    width: isDebug ? 1400 : 500,
+    height: isDebug ? 700 : 200,
+    frame: isDebug,
+    transparent: true,
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);

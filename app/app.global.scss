@@ -13,7 +13,6 @@ body {
   color: white;
   background: #391c1e linear-gradient(45deg, rgba(255, 0, 7, 0.5) 10%, rgba(116, 0, 0, 0.7)) no-repeat;
   overflow-y: hidden;
-  //  temp for dev
   height: 70px;
   margin: 0;
 }
@@ -28,7 +27,7 @@ h2 {
 
 h3 {
   margin: 0;
-  font-size: 1.67em;
+  font-size: 1.5em;
 }
 
 .container {
@@ -48,7 +47,7 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 7rem;
+    font-size: 5rem;
     color: white;
     height: 100%;
     cursor: pointer;
@@ -82,7 +81,7 @@ h3 {
   align-items: center;
   justify-content: space-around;
   .fa {
-    font-size: 3rem;
+    font-size: 2.5rem;
     cursor: pointer;
   }
 }

@@ -60,7 +60,7 @@ export default class MenuBuilder {
 
   buildDarwinTemplate() {
     const subMenuAbout = {
-      label: 'Electron',
+      label: 'ListenMoe',
       submenu: [
         {label: 'About ElectronReact', selector: 'orderFrontStandardAboutPanel:'},
         {type: 'separator'},

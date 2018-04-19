@@ -7,6 +7,9 @@ import {JP_STREAM, KR_STREAM} from '../actionTypes';
 type Props = {
   initWs: () => void,
   playPause: () => void,
+  currentChannel: string,
+  currentSong: any,
+  isPlaying: boolean,
 };
 
 class Player extends Component<Props> {
@@ -15,6 +18,11 @@ class Player extends Component<Props> {
   componentWillMount() {
     this.props.initWs();
   }
+
+  switchChannel = () => {
+    const {currentChannel} = this.props;
+    this.props.initWs(currentChannel === 'JP' ? 'KR' : 'JP');
+  };
 
   renderPlayButton() {
     const {isPlaying} = this.props;
@@ -25,14 +33,15 @@ class Player extends Component<Props> {
   }
 
   renderAudioPlayer() {
-    const {playerType} = this.props;
-    const streamUrl = playerType === 'KR' ? KR_STREAM : JP_STREAM;
+    const {currentChannel} = this.props;
+    const streamUrl = currentChannel === 'JP' ? JP_STREAM : KR_STREAM;
     return (
       <audio autoPlay id="audio-player" crossOrigin="anonymous" preload="auto" src={streamUrl}/>
     );
   }
 
   renderSongInfo(song) {
+    const {currentChannel} = this.props;
     if (!song) {
       return (
         <div className="song-info loading">
@@ -42,6 +51,9 @@ class Player extends Component<Props> {
     }
     return (
       <div className="song-info">
+        <p className="channel-switch" onClick={this.switchChannel}>
+          {currentChannel}
+        </p>
         <h3>{song.subTitle}</h3>
         <h2 id="title">{song.title}</h2>
         {song.requester &&
@@ -72,6 +84,7 @@ function mapStateToProps(state) {
   return {
     isPlaying: state.player.isPlaying,
     currentSong: state.player.currentSong,
+    currentChannel: state.player.channel,
   };
 }
 

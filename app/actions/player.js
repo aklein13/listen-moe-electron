@@ -5,25 +5,39 @@ export function playPause() {
   return {type: ACTIONS.PLAY_PAUSE};
 }
 
-export const initWs = (type = 'JP') => {
+let listenMoeWs;
+let sendHeartbeat;
+
+const setHeartbeat = (ms) => {
+  sendHeartbeat = setInterval(() => {
+    listenMoeWs.send(JSON.stringify({op: 9}));
+  }, ms);
+};
+
+export const initWs = (channel = 'JP') => {
   return (dispatch) => {
-    const listenMoeWs = new WebSocket(type === 'JP' ? JP_WS : KR_WS);
-    let sendHeartbeat;
-    const setHeartbeat = (ms) => {
-      sendHeartbeat = setInterval(() => {
-        listenMoeWs.send(JSON.stringify({op: 9}));
-      }, ms);
-    };
+    if (listenMoeWs) {
+      listenMoeWs.close();
+      clearInterval(sendHeartbeat);
+    }
+    listenMoeWs = new WebSocket(channel === 'JP' ? JP_WS : KR_WS);
+
     listenMoeWs.onopen = () => {
-      console.log('Websocket connection established.');
-      listenMoeWs.send(JSON.stringify({ op: 0, d: { auth: '' } }));
+      dispatch({
+        type: ACTIONS.SET_CHANNEL,
+        payload: {channel},
+      });
+      listenMoeWs.send(JSON.stringify({op: 0, d: {auth: ''}}));
+      console.log('Websocket connection established on ' + channel);
     };
 
     listenMoeWs.onerror = (err) => {
       console.error(err);
     };
+
     listenMoeWs.onmessage = async (message) => {
       let response;
+      // console.log('WSMESSAGE', message);
       try {
         response = JSON.parse(message.data);
       }

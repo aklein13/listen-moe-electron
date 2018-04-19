@@ -3,6 +3,7 @@ import {ACTIONS} from '../actionTypes';
 const initialState = {
   isPlaying: false,
   currentSong: null,
+  channel: '',
 };
 
 const getArtistNames = (artists) => '' + artists.map((artist) => artist.name).join();
@@ -24,6 +25,11 @@ export default function player(state = initialState, action: any) {
       return {
         ...state,
         currentSong: newSong,
+      };
+    case ACTIONS.SET_CHANNEL:
+      return {
+        ...state,
+        channel: action.payload.channel,
       };
     default:
       return state;

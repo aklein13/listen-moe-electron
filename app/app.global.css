@@ -1,10 +1,12 @@
 @import url(~font-awesome/css/font-awesome.css);
 * {
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, Helvetica Neue, serif;
+  box-sizing: border-box; }
+
+html {
   font-size: 9px; }
 
 body {
+  font-family: Arial, Helvetica, Helvetica Neue, serif;
   position: relative;
   color: white;
   background: #391c1e linear-gradient(45deg, rgba(255, 0, 7, 0.5) 10%, rgba(116, 0, 0, 0.7)) no-repeat;
@@ -21,7 +23,7 @@ h2 {
 
 h3 {
   margin: 0;
-  font-size: 1.67em; }
+  font-size: 1.5em; }
 
 .container {
   position: absolute;
@@ -39,7 +41,7 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 7rem;
+    font-size: 5rem;
     color: white;
     height: 100%;
     cursor: pointer;
@@ -67,7 +69,20 @@ h3 {
   align-items: center;
   justify-content: space-around; }
   .settings .fa {
-    font-size: 3rem;
+    font-size: 2.5rem;
     cursor: pointer; }
+
+.channel-switch {
+  height: 30px;
+  width: 30px;
+  font-size: 24px;
+  background: #391c1e;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0; }
 
 /*# sourceMappingURL=app.global.css.map */

@@ -4,11 +4,14 @@ $darkBg: #740000;
 
 * {
   box-sizing: border-box;
-  font-family: Arial, Helvetica, Helvetica Neue, serif;
+}
+
+html{
   font-size: 9px;
 }
 
 body {
+  font-family: Arial, Helvetica, Helvetica Neue, serif;
   position: relative;
   color: white;
   background: #391c1e linear-gradient(45deg, rgba(255, 0, 7, 0.5) 10%, rgba(116, 0, 0, 0.7)) no-repeat;

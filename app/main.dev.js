@@ -65,6 +65,10 @@ app.on('ready', async () => {
     width: 550,
     height: isDebug ? 400 : 70,
     frame: isDebug,
+    resizable: isDebug,
+    maximizable: isDebug,
+    fullscreenable: isDebug,
+    title: 'Listen.moe',
   });
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);

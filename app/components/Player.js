@@ -41,7 +41,6 @@ class Player extends Component<Props> {
   }
 
   renderSongInfo(song) {
-    const {currentChannel} = this.props;
     if (!song) {
       return (
         <div className="song-info loading">
@@ -51,9 +50,6 @@ class Player extends Component<Props> {
     }
     return (
       <div className="song-info">
-        <p className="channel-switch" onClick={this.switchChannel}>
-          {currentChannel}
-        </p>
         <h3>{song.subTitle}</h3>
         <h2 id="title">{song.title}</h2>
         {song.requester &&

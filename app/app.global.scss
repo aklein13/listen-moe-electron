@@ -7,7 +7,7 @@ $darkBg: #740000;
   box-sizing: border-box;
 }
 
-html{
+html {
   font-size: 9px;
 }
 
@@ -44,7 +44,7 @@ h3 {
 .player {
   display: inline-flex;
   height: 100%;
-  width: 90%;
+  width: 88%;
   .btn-pause-play {
     -webkit-app-region: no-drag;
     flex: 1;
@@ -77,29 +77,42 @@ h3 {
 
 .settings {
   -webkit-app-region: no-drag;
-  width: 10%;
+  width: 12%;
   height: 100%;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   background-color: $darkBg;
   align-items: center;
-  justify-content: space-around;
-  .fa {
-    font-size: 2.5rem;
-    cursor: pointer;
+  .settings-top {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    .fa {
+      font-size: 2.5rem;
+      cursor: pointer;
+    }
   }
 }
 
 .channel-switch {
-  height: 30px;
-  width: 30px;
-  font-size: 24px;
-  background: #391c1e;
+  display: flex;
+  flex: 1;
+  width: 100%;
+  background-color: #4b0f10;
   color: white;
-  cursor: pointer;
   font-weight: bold;
-  margin: 0;
-  position: absolute;
-  bottom: 0;
-  left: 0;
+  font-size: 19px;
+  span {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    &.active{
+      background-color: #9e0000;
+      cursor: context-menu;
+    }
+  }
 }

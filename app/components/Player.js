@@ -5,7 +5,7 @@ import Client from 'electron-rpc/client';
 import {playPause, initWs} from '../actions/player';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
 
-type Props = {
+type IProps = {
   initWs: () => void,
   playPause: () => void,
   currentChannel: string,
@@ -13,16 +13,48 @@ type Props = {
   isPlaying: boolean,
 };
 
-class Player extends Component<Props> {
-  props: Props;
-  client: any;
+type IState = {
+  volume: any;
+};
+
+class Player extends Component<IProps, IState> {
+  constructor(props) {
+    super(props);
+    this.client = null;
+    this.player = null;
+    this.state = {
+      volume: 0.5,
+    };
+  }
 
   componentWillMount() {
     this.client = new Client();
     this.client.on('media_play', () => this.props.playPause());
     this.client.on('media_switch', this.switchChannel);
     this.props.initWs();
+    window.addEventListener('mousewheel', this.manageScroll);
   }
+
+  componentDidMount() {
+    this.player = document.getElementById('audio-player');
+  }
+
+  manageScroll = (e) => {
+    const {player} = this;
+    if (!player) {
+      this.player = document.getElementById('audio-player');
+      return;
+    }
+    const {volume} = this.state;
+    if (e.wheelDelta >= 0 && volume <= 0.95) {
+      player.volume = volume + 0.05;
+      this.state.volume += 0.05;
+    }
+    else if (volume >= 0.05) {
+      player.volume = volume - 0.05;
+      this.state.volume -= 0.05;
+    }
+  };
 
   switchChannel = () => {
     const {currentChannel} = this.props;
@@ -38,15 +70,19 @@ class Player extends Component<Props> {
   }
 
   renderAudioPlayer() {
-    const {currentChannel} = this.props;
-    const streamUrl = currentChannel === 'JP' ? JP_STREAM : KR_STREAM;
+    const {isPlaying, currentChannel} = this.props;
+    let streamUrl = '';
+    if (isPlaying) {
+      streamUrl = currentChannel === 'JP' ? JP_STREAM : KR_STREAM;
+    }
     return (
       <audio autoPlay id="audio-player" crossOrigin="anonymous" preload="auto" src={streamUrl}/>
     );
   }
 
-  renderSongInfo(song) {
-    if (!song) {
+  renderSongInfo() {
+    const {currentSong} = this.props;
+    if (!currentSong) {
       return (
         <div className="song-info loading">
           <p>Please wait...</p>
@@ -55,22 +91,21 @@ class Player extends Component<Props> {
     }
     return (
       <div className="song-info">
-        <h3>{song.subTitle}</h3>
-        <h2 id="title">{song.title}</h2>
-        {song.requester &&
-        <h3 className="requested">Requested by: {song.requester}</h3>
+        <h3>{currentSong.subTitle}</h3>
+        <h2 id="title">{currentSong.title}</h2>
+        {currentSong.requester &&
+        <h3 className="requested">Requested by: {currentSong.requester}</h3>
         }
       </div>
     )
   }
 
   render() {
-    const {isPlaying, currentSong} = this.props;
     return (
       <div className="player">
-        {isPlaying && this.renderAudioPlayer()}
+        {this.renderAudioPlayer()}
         {this.renderPlayButton()}
-        {this.renderSongInfo(currentSong)}
+        {this.renderSongInfo()}
       </div>
     );
   }

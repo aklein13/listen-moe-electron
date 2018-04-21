@@ -7,12 +7,12 @@ const {BrowserWindow} = window.require('electron').remote;
 let mainWindow;
 setTimeout(() => mainWindow = BrowserWindow.getFocusedWindow(), 1000);
 
-type Props = {
+type IProps = {
   initWs: () => void,
   currentChannel: string,
 };
 
-class Settings extends Component<Props> {
+class Settings extends Component<IProps> {
   switchChannel = () => {
     const {currentChannel} = this.props;
     this.props.initWs(currentChannel === 'JP' ? 'KR' : 'JP');

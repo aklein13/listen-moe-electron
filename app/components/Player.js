@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import Client from 'electron-rpc/client';
 import {playPause, initWs} from '../actions/player';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
 
@@ -14,8 +15,12 @@ type Props = {
 
 class Player extends Component<Props> {
   props: Props;
+  client: any;
 
   componentWillMount() {
+    this.client = new Client();
+    this.client.on('media_play', () => this.props.playPause());
+    this.client.on('media_switch', this.switchChannel);
     this.props.initWs();
   }
 

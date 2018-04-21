@@ -22,23 +22,10 @@ export default class MenuBuilder {
     Menu.setApplicationMenu(menu);
     const server = new Server();
     server.configure(this.mainWindow.webContents);
-    globalShortcut.register('mediaplaypause', function () {
-      server.send('media_play', 'some arguments');
-      console.log('mediaplaypause pressed');
-    });
-    if (!registered) {
-      console.log('mediaplaypause registration failed');
-    } else {
-      console.log('mediaplaypause registration bound!');
-    }
-    globalShortcut.register('mediastop', function () {
-      console.log('mediastop pressed');
-    });
-    if (!registered) {
-      console.log('mediastop registration failed');
-    } else {
-      console.log('mediastop registration bound!');
-    }
+    globalShortcut.register('MediaPlayPause', () => server.send('media_play'));
+    globalShortcut.register('MediaStop', () => server.send('media_play'));
+    globalShortcut.register('MediaNextTrack', () => server.send('media_switch'));
+    globalShortcut.register('MediaPreviousTrack', () => server.send('media_switch'));
     return menu;
   }
 

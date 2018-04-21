@@ -59,6 +59,8 @@ h3 {
   }
   .song-info {
     -webkit-app-region: drag;
+    user-select: none;
+    cursor: default;
     flex: 4;
     padding: 5px;
     .requested {
@@ -96,16 +98,17 @@ h3 {
   background-color: #4b0f10;
   color: white;
   font-weight: bold;
-  font-size: 19px;
+  font-size: 20px;
   span {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    user-select: none;
     &.active {
       background-color: #9e0000;
-      cursor: context-menu;
+      cursor: default;
     }
   }
 }

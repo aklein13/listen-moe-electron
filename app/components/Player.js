@@ -14,7 +14,7 @@ type IProps = {
 };
 
 type IState = {
-  volume: any;
+  volume: number,
 };
 
 class Player extends Component<IProps, IState> {
@@ -23,7 +23,7 @@ class Player extends Component<IProps, IState> {
     this.client = null;
     this.player = null;
     this.state = {
-      volume: 0.5,
+      volume: 50,
     };
   }
 
@@ -45,14 +45,16 @@ class Player extends Component<IProps, IState> {
       this.player = document.getElementById('audio-player');
       return;
     }
-    const {volume} = this.state;
-    if (e.wheelDelta >= 0 && volume <= 0.95) {
-      player.volume = volume + 0.05;
-      this.state.volume += 0.05;
+    let {volume} = this.state;
+    if (e.wheelDelta >= 0 && volume <= 95) {
+      volume += 5;
+      player.volume = (volume / 100).toFixed(2);
+      this.setState({volume});
     }
-    else if (volume >= 0.05) {
-      player.volume = volume - 0.05;
-      this.state.volume -= 0.05;
+    else if (e.wheelDelta < 0 && volume >= 5) {
+      volume -= 5;
+      player.volume = (volume / 100).toFixed(2);
+      this.setState({volume});
     }
   };
 
@@ -80,12 +82,31 @@ class Player extends Component<IProps, IState> {
     );
   }
 
+  renderVolume() {
+    const {volume} = this.state;
+    return (
+      <span className="player-volume">
+        {volume}%
+      </span>
+    )
+  }
+
+  renderEventsOverlay() {
+    // Need this to handle mouse events on one side of the song detail info and window drag on the other
+    return (
+      <div id="events-overlay">
+        <div className="drag"/>
+        <div className="mouse"/>
+      </div>
+    )
+  }
+
   renderSongInfo() {
     const {currentSong} = this.props;
     if (!currentSong) {
       return (
         <div className="song-info loading">
-          <p>Please wait...</p>
+          <p>Loading...</p>
         </div>
       );
     }
@@ -96,16 +117,18 @@ class Player extends Component<IProps, IState> {
         {currentSong.requester &&
         <h3 className="requested">Requested by: {currentSong.requester}</h3>
         }
+        {this.renderEventsOverlay()}
       </div>
     )
   }
 
   render() {
     return (
-      <div className="player">
+      <div id="player">
         {this.renderAudioPlayer()}
         {this.renderPlayButton()}
         {this.renderSongInfo()}
+        {this.renderVolume()}
       </div>
     );
   }

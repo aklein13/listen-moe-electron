@@ -41,12 +41,12 @@ h3 {
   height: 100%;
 }
 
-.player {
+#player {
   display: inline-flex;
   height: 100%;
   width: 88%;
+  position: relative;
   .btn-pause-play {
-    -webkit-app-region: no-drag;
     width: 70px;
     display: flex;
     align-items: center;
@@ -58,20 +58,46 @@ h3 {
     background-color: $darkBg;
   }
   .song-info {
-    -webkit-app-region: drag;
     user-select: none;
-    cursor: default;
+    position: relative;
     flex: 4;
     padding: 5px;
     .requested {
       position: absolute;
       bottom: 2px;
     }
+    #events-overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      display: flex;
+      .drag {
+        -webkit-app-region: drag;
+        width: 50%;
+        height: 100%;
+        cursor: pointer;
+      }
+      .mouse {
+        width: 50%;
+        height: 100%;
+        cursor: default;
+      }
+    }
+  }
+  .player-volume {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+    color: white;
+    font-size: 13px;
+    user-select: none;
+    cursor: default;
   }
 }
 
 .settings {
-  -webkit-app-region: no-drag;
   width: 12%;
   height: 100%;
   display: flex;

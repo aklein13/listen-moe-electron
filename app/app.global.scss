@@ -15,9 +15,8 @@ body {
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   position: relative;
   color: white;
-  background: #391c1e linear-gradient(45deg, rgba(255, 0, 7, 0.5) 10%, rgba(116, 0, 0, 0.7)) no-repeat;
-  overflow-y: hidden;
-  height: 70px;
+  overflow: hidden;
+  background-color: $darkBg;
   margin: 0;
 }
 
@@ -35,65 +34,68 @@ h3 {
 }
 
 .container {
+}
+
+#player-wrapper {
+  background: #391c1e linear-gradient(45deg, rgba(255, 0, 7, 0.5) 10%, rgba(116, 0, 0, 0.7)) no-repeat;
+  height: 70px;
   position: absolute;
   display: flex;
   width: 100%;
-  height: 100%;
-}
-
-#player {
-  display: inline-flex;
-  height: 100%;
-  width: 88%;
-  position: relative;
-  .btn-pause-play {
-    width: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 5rem;
-    color: white;
+  #player {
+    display: inline-flex;
     height: 100%;
-    cursor: pointer;
-    background-color: $darkBg;
-  }
-  .song-info {
-    user-select: none;
+    width: 88%;
     position: relative;
-    flex: 4;
-    padding: 5px;
-    .requested {
-      position: absolute;
-      bottom: 2px;
-    }
-    #events-overlay {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      right: 0;
-      left: 0;
+    .btn-pause-play {
+      width: 70px;
       display: flex;
-      .drag {
-        -webkit-app-region: drag;
-        width: 50%;
-        height: 100%;
-        cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      color: white;
+      height: 100%;
+      cursor: pointer;
+      background-color: $darkBg;
+    }
+    .song-info {
+      user-select: none;
+      position: relative;
+      flex: 4;
+      padding: 5px;
+      .requested {
+        position: absolute;
+        bottom: 2px;
       }
-      .mouse {
-        width: 50%;
-        height: 100%;
-        cursor: default;
+      #events-overlay {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        display: flex;
+        .drag {
+          -webkit-app-region: drag;
+          width: 50%;
+          height: 100%;
+          cursor: pointer;
+        }
+        .mouse {
+          width: 50%;
+          height: 100%;
+          cursor: default;
+        }
       }
     }
-  }
-  .player-volume {
-    position: absolute;
-    bottom: 3px;
-    right: 5px;
-    color: white;
-    font-size: 13px;
-    user-select: none;
-    cursor: default;
+    .player-volume {
+      position: absolute;
+      bottom: 3px;
+      right: 5px;
+      color: white;
+      font-size: 13px;
+      user-select: none;
+      cursor: default;
+    }
   }
 }
 

@@ -2,8 +2,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Client from 'electron-rpc/client';
-import {playPause, initWs} from '../actions/player';
+import {playPause, initWs, stopWs} from '../actions/player';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
+import Panel from './Panel';
 
 type IProps = {
   initWs: () => void,
@@ -29,7 +30,7 @@ class Player extends Component<IProps, IState> {
 
   componentWillMount() {
     this.props.initWs();
-    const previousVolume = localStorage.getItem('volume');
+    const previousVolume = parseInt(localStorage.getItem('volume'));
     if (previousVolume) {
       this.setState({volume: previousVolume});
     }
@@ -41,6 +42,11 @@ class Player extends Component<IProps, IState> {
 
   componentDidMount() {
     this.player = document.getElementById('audio-player');
+    this.player.volume = (this.state.volume / 100).toFixed(2);
+  }
+
+  componentWillUnmount() {
+    this.props.stopWs();
   }
 
   manageScroll = (e) => {
@@ -130,11 +136,14 @@ class Player extends Component<IProps, IState> {
 
   render() {
     return (
-      <div id="player">
-        {this.renderAudioPlayer()}
-        {this.renderPlayButton()}
-        {this.renderSongInfo()}
-        {this.renderVolume()}
+      <div id="player-wrapper">
+        <div id="player">
+          {this.renderAudioPlayer()}
+          {this.renderPlayButton()}
+          {this.renderSongInfo()}
+          {this.renderVolume()}
+        </div>
+        <Panel/>
       </div>
     );
   }
@@ -143,6 +152,7 @@ class Player extends Component<IProps, IState> {
 const mapDispatchToProps = {
   playPause,
   initWs,
+  stopWs,
 };
 
 function mapStateToProps(state) {

@@ -17,10 +17,18 @@ export default function player(state = initialState, action: any) {
       };
     case ACTIONS.SET_SONG:
       const {song, requester} = action.payload;
+      // let image = null;
+      // song.albums && song.albums.some((album) => {
+      //   if (album.image) {
+      //     image = album.image;
+      //     return true
+      //   }
+      // });
       const newSong = {
         title: song.title,
         subTitle: getArtistNames(song.artists),
         requester: requester ? requester.displayName : null,
+        // image,
       };
       return {
         ...state,

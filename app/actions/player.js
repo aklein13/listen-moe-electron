@@ -61,3 +61,10 @@ export const initWs = (channel = 'JP') => {
     }
   };
 };
+
+export const stopWs = () => {
+  if (listenMoeWs) {
+    listenMoeWs.close();
+    clearInterval(sendHeartbeat);
+  }
+};

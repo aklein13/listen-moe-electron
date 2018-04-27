@@ -12,7 +12,7 @@ type IProps = {
   currentChannel: string,
 };
 
-class Settings extends Component<IProps> {
+class Panel extends Component<IProps> {
   switchChannel = () => {
     const {currentChannel} = this.props;
     this.props.initWs(currentChannel === 'JP' ? 'KR' : 'JP');
@@ -60,4 +60,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default connect(mapStateToProps, mapDispatchToProps)(Panel);

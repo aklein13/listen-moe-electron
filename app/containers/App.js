@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import Settings from '../components/Settings';
+import Panel from '../components/Panel';
 
 type Props = {
   children: React.Node
@@ -13,7 +13,7 @@ export default class App extends React.Component<Props> {
     return (
       <div className="container">
         {this.props.children}
-        <Settings/>
+        <Panel/>
       </div>
     );
   }

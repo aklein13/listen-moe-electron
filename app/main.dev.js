@@ -1,4 +1,4 @@
-/* eslint global-require: 0, flowtype-errors/show-errors: 0 */
+/* flowtype-errors/show-errors: 0 */
 
 /**
  * This module executes inside of electron's main process. You can start
@@ -14,6 +14,7 @@ import {app, BrowserWindow} from 'electron';
 import MenuBuilder from './menu';
 
 let mainWindow = null;
+let settingsWindow = null;
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -34,7 +35,7 @@ const installExtensions = async () => {
   const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
   const extensions = [
     'REACT_DEVELOPER_TOOLS',
-    'REDUX_DEVTOOLS'
+    'REDUX_DEVTOOLS',
   ];
 
   return Promise
@@ -42,18 +43,7 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
-
-/**
- * Add event listeners...
- */
-
-app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
+app.on('window-all-closed', () => app.quit());
 
 app.on('ready', async () => {
   if (isDebug) {
@@ -71,10 +61,19 @@ app.on('ready', async () => {
     title: 'Listen.moe',
   });
 
-  mainWindow.loadURL(`file://${__dirname}/app.html`);
+  settingsWindow = new BrowserWindow({
+    show: false,
+    width: 550,
+    height: 300,
+    resizable: isDebug,
+    maximizable: isDebug,
+    fullscreenable: isDebug,
+    title: 'Settings',
+  });
 
-  // @TODO: Use 'ready-to-show' event
-  //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
+  mainWindow.loadURL(`file://${__dirname}/app.html`);
+  settingsWindow.loadURL(`file://${__dirname}/app.html#/settings`);
+
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -83,9 +82,16 @@ app.on('ready', async () => {
     mainWindow.focus();
   });
 
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+  settingsWindow.webContents.on('did-finish-load', () => {
+    if (!mainWindow) {
+      throw new Error('"settingsWindow" is not defined');
+    }
+    // settingsWindow.show();
+    // settingsWindow.focus();
   });
+
+  mainWindow.on('closed', () => mainWindow = null);
+  settingsWindow.on('closed', () => mainWindow = null);
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();

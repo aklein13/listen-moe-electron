@@ -19,15 +19,15 @@ class Panel extends Component<IProps> {
   };
 
   openSettings = () => {
-    console.log('Will open it at some point...')
+    console.log('Will open it at some point...');
   };
 
   render() {
     const {currentChannel} = this.props;
     const isJpActive = currentChannel === 'JP' || !currentChannel;
     return (
-      <div className="settings">
-        <div className="settings-top">
+      <div className="panel">
+        <div className="panel-top">
           <div className="fa fa-gear" onClick={this.openSettings}/>
           <div className="fa fa-close" onClick={() => mainWindow.close()}/>
         </div>

@@ -83,7 +83,7 @@ app.on('ready', async () => {
   });
 
   settingsWindow.webContents.on('did-finish-load', () => {
-    if (!mainWindow) {
+    if (!settingsWindow) {
       throw new Error('"settingsWindow" is not defined');
     }
     // settingsWindow.show();

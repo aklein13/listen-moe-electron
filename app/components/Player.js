@@ -28,10 +28,14 @@ class Player extends Component<IProps, IState> {
   }
 
   componentWillMount() {
+    this.props.initWs();
+    const previousVolume = localStorage.getItem('volume');
+    if (previousVolume) {
+      this.setState({volume: previousVolume});
+    }
     this.client = new Client();
     this.client.on('media_play', () => this.props.playPause());
     this.client.on('media_switch', this.switchChannel);
-    this.props.initWs();
     window.addEventListener('mousewheel', this.manageScroll);
   }
 
@@ -50,11 +54,13 @@ class Player extends Component<IProps, IState> {
       volume += 5;
       player.volume = (volume / 100).toFixed(2);
       this.setState({volume});
+      localStorage.setItem('volume', volume);
     }
     else if (e.wheelDelta < 0 && volume >= 5) {
       volume -= 5;
       player.volume = (volume / 100).toFixed(2);
       this.setState({volume});
+      localStorage.setItem('volume', volume);
     }
   };
 

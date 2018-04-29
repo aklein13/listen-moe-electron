@@ -5,6 +5,7 @@ import Client from 'electron-rpc/client';
 import {playPause, initWs, stopWs} from '../actions/player';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
 import Panel from './Panel';
+import Marquee from 'marquee-react-dwyer';
 
 type IProps = {
   initWs: () => void,
@@ -122,10 +123,31 @@ class Player extends Component<IProps, IState> {
         </div>
       );
     }
+    // TODO Some better overflow detection?
     return (
       <div className="song-info">
-        <h3>{currentSong.subTitle}</h3>
-        <h2 id="title">{currentSong.title}</h2>
+        {currentSong.subTitle.length > 25 ?
+          <Marquee
+            Size="h3"
+            NumberOfOptions="1"
+            Index0={currentSong.subTitle}
+            TimeToCross="12000"
+            Color="white"
+          />
+          :
+          <h3>{currentSong.subTitle}</h3>
+        }
+        {currentSong.title.length > 17 ?
+          <Marquee
+            Size="h2"
+            NumberOfOptions="1"
+            Index0={currentSong.title}
+            TimeToCross="12000"
+            Color="white"
+          />
+          :
+          <h2>{currentSong.title}</h2>
+        }
         {currentSong.requester &&
         <h3 className="requested">Requested by: {currentSong.requester}</h3>
         }

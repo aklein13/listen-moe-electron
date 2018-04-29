@@ -52,7 +52,7 @@ app.on('ready', async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 550,
+    width: 500,
     height: isDebug ? 400 : 70,
     frame: isDebug,
     resizable: isDebug,
@@ -92,7 +92,7 @@ app.on('ready', async () => {
 
   mainWindow.on('closed', () => mainWindow = null);
   settingsWindow.on('closed', () => settingsWindow = null);
-
+  settingsWindow.close();
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 });

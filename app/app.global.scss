@@ -22,9 +22,7 @@ body {
 
 h2 {
   margin: 0;
-  font-size: 2.25rem;
-  font-weight: bold;
-  letter-spacing: -0.025em;
+  font-size: 2.1rem;
   color: #fff;
 }
 
@@ -63,6 +61,7 @@ h3 {
       position: relative;
       flex: 4;
       padding: 5px;
+      overflow: hidden;
       .requested {
         position: absolute;
         bottom: 2px;
@@ -138,5 +137,16 @@ h3 {
       background-color: #9e0000;
       cursor: default;
     }
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate(0, 0);
+    animation-timing-function: linear;
+  }
+  100% {
+    transform: translate(-100%, 0);
+    animation-timing-function: linear;
   }
 }

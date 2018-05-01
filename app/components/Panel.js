@@ -10,6 +10,7 @@ setTimeout(() => mainWindow = BrowserWindow.getFocusedWindow(), 1000);
 type IProps = {
   initWs: () => void,
   currentChannel: string,
+  client: Client,
 };
 
 class Panel extends Component<IProps> {
@@ -18,9 +19,7 @@ class Panel extends Component<IProps> {
     this.props.initWs(currentChannel === 'JP' ? 'KR' : 'JP');
   };
 
-  openSettings = () => {
-    console.log('Will open it at some point...');
-  };
+  openSettings = () => this.props.client.request('open_settings');
 
   render() {
     const {currentChannel} = this.props;
@@ -29,7 +28,7 @@ class Panel extends Component<IProps> {
       <div className="panel">
         <div className="panel-top">
           <div className="fa fa-gear" onClick={this.openSettings}/>
-          <div className="fa fa-close" onClick={() => mainWindow.close()}/>
+          <div className="fa fa-close" onClick={() => mainWindow.closeApp()}/>
         </div>
         <div className="channel-switch">
           <span

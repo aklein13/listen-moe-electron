@@ -1,6 +1,5 @@
 // @flow
-import {app, Menu, shell, BrowserWindow, globalShortcut} from 'electron';
-import Server from 'electron-rpc/server';
+import {app, Menu, shell, BrowserWindow} from 'electron';
 
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
@@ -20,12 +19,6 @@ export default class MenuBuilder {
 
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
-    const server = new Server();
-    server.configure(this.mainWindow.webContents);
-    globalShortcut.register('MediaPlayPause', () => server.send('media_play'));
-    globalShortcut.register('MediaStop', () => server.send('media_play'));
-    globalShortcut.register('MediaNextTrack', () => server.send('media_switch'));
-    globalShortcut.register('MediaPreviousTrack', () => server.send('media_switch'));
     return menu;
   }
 

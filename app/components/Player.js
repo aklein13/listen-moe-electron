@@ -22,7 +22,9 @@ type IState = {
 class Player extends Component<IProps, IState> {
   constructor(props) {
     super(props);
-    this.client = null;
+    this.client = new Client();
+    this.client.on('media_play', this.props.playPause);
+    this.client.on('media_switch', this.switchChannel);
     this.player = null;
     this.state = {
       volume: 50,
@@ -35,12 +37,8 @@ class Player extends Component<IProps, IState> {
     if (previousVolume) {
       this.setState({volume: previousVolume});
     }
-    this.client = new Client();
-    this.client.on('media_play', () => this.props.playPause());
-    this.client.on('media_switch', this.switchChannel);
     window.addEventListener('mousewheel', this.manageScroll);
   }
-
   componentDidMount() {
     this.player = document.getElementById('audio-player');
     this.player.volume = (this.state.volume / 100).toFixed(2);
@@ -165,7 +163,7 @@ class Player extends Component<IProps, IState> {
           {this.renderSongInfo()}
           {this.renderVolume()}
         </div>
-        <Panel/>
+        <Panel client={this.client}/>
       </div>
     );
   }

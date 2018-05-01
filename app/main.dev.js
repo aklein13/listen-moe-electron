@@ -10,8 +10,9 @@
  *
  * @flow
  */
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, globalShortcut} from 'electron';
 import MenuBuilder from './menu';
+import Server from 'electron-rpc/server';
 
 let mainWindow = null;
 let settingsWindow = null;
@@ -45,6 +46,25 @@ const installExtensions = async () => {
 
 app.on('window-all-closed', () => app.quit());
 
+const initSettings = () => {
+  settingsWindow = new BrowserWindow({
+    show: false,
+    width: 500,
+    height: 300,
+    resizable: isDebug,
+    maximizable: isDebug,
+    fullscreenable: isDebug,
+    title: 'Settings',
+  });
+  settingsWindow.loadURL(`file://${__dirname}/app.html#/settings`);
+};
+
+const openSettings = () => {
+  settingsWindow.show();
+  settingsWindow.focus();
+  settingsWindow.on('closed', initSettings);
+};
+
 app.on('ready', async () => {
   if (isDebug) {
     await installExtensions();
@@ -61,18 +81,15 @@ app.on('ready', async () => {
     title: 'Listen.moe',
   });
 
-  settingsWindow = new BrowserWindow({
-    show: false,
-    width: 550,
-    height: 300,
-    resizable: isDebug,
-    maximizable: isDebug,
-    fullscreenable: isDebug,
-    title: 'Settings',
-  });
+  const server = new Server();
+  server.configure(mainWindow.webContents);
+  globalShortcut.register('MediaPlayPause', () => server.send('media_play'));
+  globalShortcut.register('MediaStop', () => server.send('media_play'));
+  globalShortcut.register('MediaNextTrack', () => server.send('media_switch'));
+  globalShortcut.register('MediaPreviousTrack', () => server.send('media_switch'));
+  server.on('open_settings', openSettings);
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
-  settingsWindow.loadURL(`file://${__dirname}/app.html#/settings`);
 
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
@@ -82,17 +99,15 @@ app.on('ready', async () => {
     mainWindow.focus();
   });
 
-  settingsWindow.webContents.on('did-finish-load', () => {
-    if (!settingsWindow) {
-      throw new Error('"settingsWindow" is not defined');
-    }
-    // settingsWindow.show();
-    // settingsWindow.focus();
-  });
-
   mainWindow.on('closed', () => mainWindow = null);
-  settingsWindow.on('closed', () => settingsWindow = null);
-  settingsWindow.close();
-  const menuBuilder = new MenuBuilder(mainWindow);
+
+  const menuBuilder = new MenuBuilder(mainWindow, settingsWindow);
   menuBuilder.buildMenu();
+  mainWindow.closeApp = () => {
+    settingsWindow.on('closed', () => settingsWindow = null);
+    settingsWindow.close();
+    mainWindow.close();
+    app.quit();
+  };
+  initSettings();
 });

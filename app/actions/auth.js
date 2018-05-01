@@ -1,4 +1,4 @@
-import {API_HEADERS, API_URL} from '../actionTypes';
+import {ACTIONS, API_HEADERS, API_URL} from '../actionTypes';
 
 export const login = (login, password) => {
   return (dispatch) => {
@@ -15,11 +15,25 @@ export const login = (login, password) => {
     const url = API_URL + 'login';
     const request = new Request(url);
     fetch(request, init).then((response) => response.json())
-      .catch(error => console.error('Error:', error))
+      .catch(error => {
+        dispatch({type: ACTIONS.LOGIN_ERROR});
+        console.error('Error:', error);
+      })
       .then((data) => {
+        const {token} = data;
+        if (!token) {
+          return dispatch({type: ACTIONS.LOGIN_ERROR});
+        }
+        dispatch({
+          type: ACTIONS.LOGIN_SUCCESS,
+          payload: {token, login},
+        });
         localStorage.setItem('login', login);
-        console.log(data);
-        // TODO Handle data with token
+        localStorage.setItem('token', token);
       });
   }
 };
+
+export function clearAuthError() {
+  return {type: ACTIONS.CLEAR_ERROR}
+}

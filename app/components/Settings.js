@@ -1,9 +1,13 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {login} from '../actions/auth';
+import {login, clearAuthError} from '../actions/auth';
 
-type IProps = {};
+type IProps = {
+  clearAuthError: () => void,
+  login: () => void,
+};
+
 type IState = {
   login: string,
   password: string,
@@ -22,6 +26,13 @@ class Settings extends Component<IProps, IState> {
     const previousLogin = localStorage.getItem('login');
     if (previousLogin) {
       this.setState({login: previousLogin});
+    }
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.error && this.props.error !== newProps.error) {
+      alert(newProps.error);
+      this.props.clearAuthError();
     }
   }
 
@@ -63,10 +74,15 @@ class Settings extends Component<IProps, IState> {
 
 const mapDispatchToProps = {
   login,
+  clearAuthError,
 };
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    error: state.auth.error,
+    token: state.auth.token,
+    login: state.auth.login,
+  };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);

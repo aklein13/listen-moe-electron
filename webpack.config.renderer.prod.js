@@ -28,35 +28,6 @@ export default merge.smart(baseConfig, {
 
   module: {
     rules: [
-      // Extract all .global.css to style.css as is
-      {
-        test: /\.global\.css$/,
-        use: ExtractTextPlugin.extract({
-          publicPath: './',
-          use: {
-            loader: 'css-loader',
-            options: {
-              minimize: true,
-            }
-          },
-          fallback: 'style-loader',
-        })
-      },
-      // Pipe other styles through css modules and append to style.css
-      {
-        test: /^((?!\.global).)*\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              minimize: true,
-              importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
-            }
-          }
-        }),
-      },
       // Add SASS support  - compile all .global.scss files and pipe it to style.css
       {
         test: /\.global\.(scss|sass)$/,
@@ -171,8 +142,6 @@ export default merge.smart(baseConfig, {
       parallel: true,
       sourceMap: true
     }),
-
-    new ExtractTextPlugin('style.css'),
 
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',

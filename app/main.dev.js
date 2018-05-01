@@ -99,7 +99,14 @@ app.on('ready', async () => {
     mainWindow.focus();
   });
 
-  mainWindow.on('closed', () => mainWindow = null);
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+    if (settingsWindow) {
+      settingsWindow.on('closed', () => settingsWindow = null);
+      settingsWindow.close();
+    }
+    app.quit();
+  });
 
   const menuBuilder = new MenuBuilder(mainWindow, settingsWindow);
   menuBuilder.buildMenu();

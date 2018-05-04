@@ -6,7 +6,7 @@ const initialState = {
   channel: '',
 };
 
-const getArtistNames = (artists) => '' + artists.map((artist) => artist.name).join();
+const getArtistNames = (artists) => ' ' + artists.map((artist) => artist.name).join();
 
 export default function player(state = initialState, action: any) {
   switch (action.type) {
@@ -25,6 +25,7 @@ export default function player(state = initialState, action: any) {
       //   }
       // });
       const newSong = {
+        id: song.id,
         title: song.title,
         subTitle: getArtistNames(song.artists),
         requester: requester ? requester.displayName : null,

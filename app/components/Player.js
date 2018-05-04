@@ -3,12 +3,15 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Client from 'electron-rpc/client';
 import {playPause, initWs, stopWs} from '../actions/player';
+import {fetchFavourites, setUser} from '../actions/auth';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
 import Panel from './Panel';
 import Marquee from 'marquee-react-dwyer';
 
 type IProps = {
   initWs: () => void,
+  setUser: () => void,
+  fetchFavourites: () => void,
   playPause: () => void,
   currentChannel: string,
   currentSong: any,
@@ -37,8 +40,15 @@ class Player extends Component<IProps, IState> {
     if (previousVolume) {
       this.setState({volume: previousVolume});
     }
+    const login = localStorage.getItem('login');
+    const token = localStorage.getItem('token');
+    if (token && login) {
+      this.props.setUser(login, token);
+      this.props.fetchFavourites(login, token);
+    }
     window.addEventListener('mousewheel', this.manageScroll);
   }
+
   componentDidMount() {
     this.player = document.getElementById('audio-player');
     this.player.volume = (this.state.volume / 100).toFixed(2);
@@ -112,6 +122,16 @@ class Player extends Component<IProps, IState> {
     )
   }
 
+  renderFavouriteStar() {
+    const {favourites, currentSong} = this.props;
+    const isFav = favourites[currentSong.id];
+    return (
+      <div id="fav-star" className={isFav ? 'active' : ''}>
+        <i className="fa fa-star"/>
+      </div>
+    );
+  }
+
   renderSongInfo() {
     const {currentSong} = this.props;
     if (!currentSong) {
@@ -149,6 +169,7 @@ class Player extends Component<IProps, IState> {
         {currentSong.requester &&
         <h3 className="requested">Requested by: {currentSong.requester}</h3>
         }
+        {this.renderFavouriteStar()}
         {this.renderEventsOverlay()}
       </div>
     )
@@ -170,8 +191,10 @@ class Player extends Component<IProps, IState> {
 }
 
 const mapDispatchToProps = {
+  fetchFavourites,
   playPause,
   initWs,
+  setUser,
   stopWs,
 };
 
@@ -180,6 +203,9 @@ function mapStateToProps(state) {
     isPlaying: state.player.isPlaying,
     currentSong: state.player.currentSong,
     currentChannel: state.player.channel,
+    favourites: state.auth.favourites,
+    token: state.auth.token,
+    login: state.auth.login,
   };
 }
 

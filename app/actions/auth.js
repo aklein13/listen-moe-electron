@@ -34,6 +34,38 @@ export const login = (login, password) => {
   }
 };
 
+export const fetchFavourites = (login, token) => {
+  return (dispatch) => {
+    const headers = new Headers(API_HEADERS);
+    headers.append('Authorization', `Bearer ${token}`);
+    const init = {
+      method: 'GET',
+      headers,
+    };
+    const url = `${API_URL}favorites/${login}`;
+    const request = new Request(url);
+    fetch(request, init).then((response) => response.json())
+      .catch(error => {
+        console.error('Error:', error);
+      })
+      .then((data) => {
+        if (data && data.favorites) {
+          dispatch({
+            type: ACTIONS.LOAD_FAVOURITES,
+            payload: {favourites: data.favorites},
+          })
+        }
+      });
+  }
+};
+
 export function clearAuthError() {
   return {type: ACTIONS.CLEAR_ERROR}
+}
+
+export function setUser(login, token) {
+  return {
+    type: ACTIONS.SET_USER,
+    payload: {token, login},
+  }
 }

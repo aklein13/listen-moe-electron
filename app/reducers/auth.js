@@ -4,6 +4,7 @@ const initialState = {
   login: '',
   token: null,
   error: '',
+  favourites: {},
 };
 
 export default function auth(state = initialState, action: any) {
@@ -13,16 +14,24 @@ export default function auth(state = initialState, action: any) {
         ...state,
         error: 'Invalid login on password',
       };
-      case ACTIONS.CLEAR_ERROR:
+    case ACTIONS.CLEAR_ERROR:
       return {
         ...state,
         error: '',
       };
+    case ACTIONS.SET_USER:
     case ACTIONS.LOGIN_SUCCESS:
       return {
         ...state,
         login: action.payload.login,
         token: action.payload.token,
+      };
+    case ACTIONS.LOAD_FAVOURITES:
+      const loadedFavourites = {};
+      action.payload.favourites.forEach((fav) => loadedFavourites[fav.id] = true);
+      return {
+        ...state,
+        favourites: loadedFavourites,
       };
     default:
       return state;

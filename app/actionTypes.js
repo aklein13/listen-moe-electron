@@ -5,6 +5,8 @@ export const ACTIONS = {
   LOGIN_ERROR: 'login_error',
   CLEAR_ERROR: 'clear_auth_error',
   LOGIN_SUCCESS: 'login_success',
+  SET_USER: 'set_token',
+  LOAD_FAVOURITES: 'fetch_favourites',
 };
 
 export const JP_STREAM = 'https://listen.moe/stream';

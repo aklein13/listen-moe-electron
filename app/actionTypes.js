@@ -7,6 +7,7 @@ export const ACTIONS = {
   LOGIN_SUCCESS: 'login_success',
   SET_USER: 'set_token',
   LOAD_FAVOURITES: 'fetch_favourites',
+  SET_FAVOURITE: 'set_favourite',
 };
 
 export const JP_STREAM = 'https://listen.moe/stream';

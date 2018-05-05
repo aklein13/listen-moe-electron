@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Client from 'electron-rpc/client';
 import {playPause, initWs, stopWs} from '../actions/player';
-import {fetchFavourites, setUser} from '../actions/auth';
+import {fetchFavourites, setUser, manageFavourite} from '../actions/auth';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
 import Panel from './Panel';
 import Marquee from 'marquee-react-dwyer';
@@ -16,6 +16,7 @@ type IProps = {
   currentChannel: string,
   currentSong: any,
   isPlaying: boolean,
+  manageFavourite: (number, string, boolean) => void,
 };
 
 type IState = {
@@ -123,10 +124,17 @@ class Player extends Component<IProps, IState> {
   }
 
   renderFavouriteStar() {
-    const {favourites, currentSong} = this.props;
+    const {favourites, currentSong, token} = this.props;
+    if (!token) {
+      return;
+    }
     const isFav = favourites[currentSong.id];
     return (
-      <div id="fav-star" className={isFav ? 'active' : ''}>
+      <div
+        id="fav-star"
+        className={isFav ? 'active' : ''}
+        onClick={() => this.props.manageFavourite(currentSong.id, token, !isFav)}
+      >
         <i className="fa fa-star"/>
       </div>
     );
@@ -196,6 +204,7 @@ const mapDispatchToProps = {
   initWs,
   setUser,
   stopWs,
+  manageFavourite,
 };
 
 function mapStateToProps(state) {

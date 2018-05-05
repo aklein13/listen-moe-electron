@@ -16,7 +16,7 @@ export const login = (login, password) => {
     const request = new Request(url);
     fetch(request, init).then((response) => response.json())
       .catch(error => {
-        dispatch({type: ACTIONS.LOGIN_ERROR});
+        alert('Network request failed');
         console.error('Error:', error);
       })
       .then((data) => {
@@ -37,7 +37,7 @@ export const login = (login, password) => {
 export const fetchFavourites = (login, token) => {
   return (dispatch) => {
     const headers = new Headers(API_HEADERS);
-    headers.append('Authorization', `Bearer ${token}`);
+    headers.append('Authorization', 'Bearer ' + token);
     const init = {
       method: 'GET',
       headers,
@@ -55,6 +55,34 @@ export const fetchFavourites = (login, token) => {
             payload: {favourites: data.favorites},
           })
         }
+      });
+  }
+};
+
+export const manageFavourite = (songId, token, shouldBeFav) => {
+  return (dispatch) => {
+    const headers = new Headers(API_HEADERS);
+    headers.append('Authorization', 'Bearer ' + token);
+    const init = {
+      method: shouldBeFav ? 'POST' : 'DELETE',
+      headers,
+    };
+    const url = `${API_URL}favorites/${songId}`;
+    const request = new Request(url);
+    fetch(request, init).then((response) => {
+      if (response.ok) {
+        return true;
+      }
+      throw new Error('Request failed.');
+    })
+      .catch(error => {
+        console.error('Error:', error);
+      })
+      .then(() => {
+        dispatch({
+          type: ACTIONS.SET_FAVOURITE,
+          payload: {songId, shouldBeFav},
+        })
       });
   }
 };

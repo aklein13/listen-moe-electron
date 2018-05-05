@@ -33,6 +33,19 @@ export default function auth(state = initialState, action: any) {
         ...state,
         favourites: loadedFavourites,
       };
+    case ACTIONS.SET_FAVOURITE:
+      const previousFavourites = {...state.favourites};
+      const {songId, shouldBeFav} = action.payload;
+      if (shouldBeFav) {
+        previousFavourites[songId] = true;
+      }
+      else {
+        delete previousFavourites[songId];
+      }
+      return {
+        ...state,
+        favourites: previousFavourites,
+      };
     default:
       return state;
   }

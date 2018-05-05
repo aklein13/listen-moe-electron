@@ -1,5 +1,6 @@
 $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome";
+@import "form-reset.css";
 
 $darkBg: #740000;
 
@@ -97,6 +98,7 @@ h3 {
         font-size: 26px;
         cursor: pointer;
         z-index: 100;
+        transition: color 0.4s;
         &.active {
           color: #ffc900;
         }
@@ -153,6 +155,54 @@ h3 {
       background-color: #9e0000;
       cursor: default;
     }
+  }
+}
+
+::-webkit-input-placeholder {
+  color: white;
+}
+
+.settings-container {
+  display: flex;
+  .login-form {
+    flex: 1;
+    font-size: 24px;
+    border-right: 1px solid white;
+    form{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 15px;
+    }
+    p {
+      margin: 0;
+      font-size: 20px;
+      text-align: center;
+    }
+    button {
+      display: none;
+    }
+    input {
+      color: white;
+      font-size: 20px;
+      border-bottom: 1px solid white;
+      display: block;
+      background-color: transparent;
+      max-width: 50%;
+      margin-top: 10px;
+    }
+    .button{
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    ::selection {
+      color: white;
+      background: transparent;
+    }
+  }
+  .settings {
+    flex: 1;
   }
 }
 

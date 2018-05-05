@@ -11,6 +11,7 @@ type IProps = {
 type IState = {
   login: string,
   password: string,
+  token: any,
 };
 
 class Settings extends Component<IProps, IState> {
@@ -19,13 +20,15 @@ class Settings extends Component<IProps, IState> {
     this.state = {
       login: '',
       password: '',
+      token: null,
     };
   }
 
   componentWillMount() {
     const previousLogin = localStorage.getItem('login');
+    const previousToken = localStorage.getItem('token');
     if (previousLogin) {
-      this.setState({login: previousLogin});
+      this.setState({login: previousLogin, token: previousToken ? previousToken : null});
     }
   }
 
@@ -44,10 +47,19 @@ class Settings extends Component<IProps, IState> {
     this.props.login(this.state.login, this.state.password);
   };
 
-  render() {
-    const {login, password} = this.state;
+  renderLoginForm() {
+    const {login, password, token} = this.state;
+    if (token) {
+      return (
+        <div className="login-form">
+          <p className="logged">
+            Logged in as {login}
+          </p>
+        </div>
+      )
+    }
     return (
-      <div className="settings">
+      <div className="login-form">
         <form onSubmit={this.handleFormSubmit}>
           <input
             placeholder="Login"
@@ -66,7 +78,19 @@ class Settings extends Component<IProps, IState> {
           <button type="submit">
             Log in
           </button>
+          <div className="button" onClick={this.handleFormSubmit}>
+            Log in
+          </div>
         </form>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className="settings-container">
+        {this.renderLoginForm()}
+        <div className="settings"/>
       </div>
     );
   }

@@ -37,6 +37,9 @@ class Settings extends Component<IProps, IState> {
       alert(newProps.error);
       this.props.clearAuthError();
     }
+    if (newProps.token && this.props.token !== newProps.token) {
+      this.setState({token: newProps.token});
+    }
   }
 
   handleFormChange = (e, field) => this.setState({[field]: e.target.value});
@@ -47,6 +50,14 @@ class Settings extends Component<IProps, IState> {
     this.props.login(this.state.login, this.state.password);
   };
 
+  handleLogOut = () => {
+    const previousLogin = localStorage.getItem('login');
+    const previousToken = localStorage.setItem('token', '');
+    if (previousLogin) {
+      this.setState({login: previousLogin, token: previousToken ? previousToken : null});
+    }
+  };
+
   renderLoginForm() {
     const {login, password, token} = this.state;
     if (token) {
@@ -55,6 +66,9 @@ class Settings extends Component<IProps, IState> {
           <p className="logged">
             Logged in as {login}
           </p>
+          <div className="button" onClick={this.handleLogOut}>
+            Log out
+          </div>
         </div>
       )
     }

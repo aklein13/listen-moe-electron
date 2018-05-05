@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Client from 'electron-rpc/client';
 import {playPause, initWs, stopWs} from '../actions/player';
-import {fetchFavourites, setUser, manageFavourite} from '../actions/auth';
+import {fetchFavourites, setUser, manageFavourite, logOut} from '../actions/auth';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
 import Panel from './Panel';
 import Marquee from 'marquee-react-dwyer';
@@ -17,6 +17,7 @@ type IProps = {
   currentSong: any,
   isPlaying: boolean,
   manageFavourite: (number, string, boolean) => void,
+  logOut: () => void,
 };
 
 type IState = {
@@ -29,6 +30,17 @@ class Player extends Component<IProps, IState> {
     this.client = new Client();
     this.client.on('media_play', this.props.playPause);
     this.client.on('media_switch', this.switchChannel);
+    this.client.on('user_logged_out', () => this.props.logOut(true));
+    this.client.on('user_logged_in', (error, body) => {
+      if (!body) {
+        return;
+      }
+      const {token, login} = body;
+      if (token && login) {
+        this.props.setUser(login, token);
+        this.props.fetchFavourites(login, token);
+      }
+    });
     this.player = null;
     this.state = {
       volume: 50,
@@ -205,6 +217,7 @@ const mapDispatchToProps = {
   setUser,
   stopWs,
   manageFavourite,
+  logOut,
 };
 
 function mapStateToProps(state) {

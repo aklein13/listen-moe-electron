@@ -88,6 +88,8 @@ app.on('ready', async () => {
   globalShortcut.register('MediaNextTrack', () => server.send('media_switch'));
   globalShortcut.register('MediaPreviousTrack', () => server.send('media_switch'));
   server.on('open_settings', openSettings);
+  server.on('logged_in', (event) => server.send('user_logged_in', event.body));
+  server.on('logged_out', () => server.send('user_logged_out'));
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 

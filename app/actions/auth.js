@@ -1,4 +1,7 @@
+import Client from 'electron-rpc/client';
 import {ACTIONS, API_HEADERS, API_URL} from '../actionTypes';
+
+const client = new Client();
 
 export const login = (login, password) => {
   return (dispatch) => {
@@ -30,6 +33,7 @@ export const login = (login, password) => {
         });
         localStorage.setItem('login', login);
         localStorage.setItem('token', token);
+        client.request('logged_in', {login, token});
       });
   }
 };
@@ -96,4 +100,12 @@ export function setUser(login, token) {
     type: ACTIONS.SET_USER,
     payload: {token, login},
   }
+}
+
+export function logOut(fromPlayer = false) {
+  if (!fromPlayer) {
+    client.request('logged_out');
+    localStorage.setItem('token', '');
+  }
+  return {type: ACTIONS.LOG_OUT};
 }

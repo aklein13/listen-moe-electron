@@ -1,11 +1,12 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {login, clearAuthError} from '../actions/auth';
+import {login, clearAuthError, logOut} from '../actions/auth';
 
 type IProps = {
   clearAuthError: () => void,
   login: () => void,
+  logOut: ()=>void,
 };
 
 type IState = {
@@ -52,9 +53,9 @@ class Settings extends Component<IProps, IState> {
 
   handleLogOut = () => {
     const previousLogin = localStorage.getItem('login');
-    const previousToken = localStorage.setItem('token', '');
+    this.props.logOut();
     if (previousLogin) {
-      this.setState({login: previousLogin, token: previousToken ? previousToken : null});
+      this.setState({login: previousLogin, token: null});
     }
   };
 
@@ -113,6 +114,7 @@ class Settings extends Component<IProps, IState> {
 const mapDispatchToProps = {
   login,
   clearAuthError,
+  logOut,
 };
 
 function mapStateToProps(state) {

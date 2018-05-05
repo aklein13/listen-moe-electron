@@ -7,7 +7,7 @@ const initialState = {
   favourites: {},
 };
 
-export default function auth(state = initialState, action: any) {
+export default function auth(state = {...initialState}, action: any) {
   switch (action.type) {
     case ACTIONS.LOGIN_ERROR:
       return {
@@ -45,6 +45,10 @@ export default function auth(state = initialState, action: any) {
       return {
         ...state,
         favourites: previousFavourites,
+      };
+    case ACTIONS.LOG_OUT:
+      return {
+        ...initialState,
       };
     default:
       return state;

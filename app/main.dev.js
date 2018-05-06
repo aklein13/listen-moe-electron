@@ -14,6 +14,9 @@ import {app, BrowserWindow, globalShortcut} from 'electron';
 import MenuBuilder from './menu';
 import Server from 'electron-rpc/server';
 
+const Config = require('electron-config');
+const config = new Config();
+
 let mainWindow = null;
 let settingsWindow = null;
 
@@ -70,7 +73,9 @@ app.on('ready', async () => {
     await installExtensions();
   }
 
-  mainWindow = new BrowserWindow({
+  const previousBounds = config.get('windowBounds');
+
+  let mainWindowConfig = {
     show: false,
     width: 500,
     height: isDebug ? 400 : 70,
@@ -79,7 +84,13 @@ app.on('ready', async () => {
     maximizable: isDebug,
     fullscreenable: isDebug,
     title: 'Listen.moe',
-  });
+  };
+
+  if (previousBounds) {
+    mainWindowConfig = {...mainWindowConfig, ...previousBounds};
+  }
+
+  mainWindow = new BrowserWindow(mainWindowConfig);
 
   const server = new Server();
   server.configure(mainWindow.webContents);
@@ -113,6 +124,7 @@ app.on('ready', async () => {
   const menuBuilder = new MenuBuilder(mainWindow, settingsWindow);
   menuBuilder.buildMenu();
   mainWindow.closeApp = () => {
+    config.set('windowBounds', mainWindow.getBounds());
     settingsWindow.on('closed', () => settingsWindow = null);
     settingsWindow.close();
     mainWindow.close();

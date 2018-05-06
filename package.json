@@ -145,6 +145,7 @@
   },
   "dependencies": {
     "devtron": "^1.4.0",
+    "electron-config": "^1.0.0",
     "electron-debug": "^1.5.0",
     "electron-rpc": "^2.0.1",
     "font-awesome": "^4.7.0",

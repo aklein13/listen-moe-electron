@@ -6,7 +6,7 @@ import {login, clearAuthError, logOut} from '../actions/auth';
 type IProps = {
   clearAuthError: () => void,
   login: () => void,
-  logOut: ()=>void,
+  logOut: () => void,
 };
 
 type IState = {

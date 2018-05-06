@@ -173,7 +173,8 @@ h3 {
     font-size: 24px;
     border-right: 1px solid white;
     width: 50%;
-    form{
+    text-align: center;
+    form {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -182,7 +183,8 @@ h3 {
     .logged {
       font-size: 20px;
       text-align: center;
-      margin-top: 15px;
+      margin-top: 25px;
+      margin-bottom: 15px;
     }
     button {
       display: none;
@@ -196,12 +198,17 @@ h3 {
       max-width: 70%;
       margin-top: 10px;
     }
-    .button{
+    .button {
       color: white;
       cursor: pointer;
       margin-top: 15px;
       font-size: 20px;
-      text-align: center;
+      display: inline;
+      padding: 5px;
+      &:hover {
+        background-color: white;
+        color: $darkBg;
+      }
     }
     ::selection {
       color: white;

@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {login, clearAuthError, logOut} from '../actions/auth';
+import CheckBox from './CheckBox';
 
 type IProps = {
   clearAuthError: () => void,
@@ -13,6 +14,7 @@ type IState = {
   login: string,
   password: string,
   token: any,
+  autoPlay: boolean,
 };
 
 class Settings extends Component<IProps, IState> {
@@ -22,14 +24,19 @@ class Settings extends Component<IProps, IState> {
       login: '',
       password: '',
       token: null,
+      autoPlay: false,
     };
   }
 
   componentWillMount() {
     const previousLogin = localStorage.getItem('login');
     const previousToken = localStorage.getItem('token');
+    const autoPlay = localStorage.getItem('autoPlay');
     if (previousLogin) {
       this.setState({login: previousLogin, token: previousToken ? previousToken : null});
+    }
+    if (autoPlay) {
+      this.setState({autoPlay: autoPlay === 'true'});
     }
   }
 
@@ -101,11 +108,29 @@ class Settings extends Component<IProps, IState> {
     );
   }
 
+  changeAutoPlay = () => {
+    const autoPlay = !this.state.autoPlay;
+    this.setState({autoPlay});
+    localStorage.setItem('autoPlay', autoPlay);
+  };
+
+  renderSettings() {
+    const {autoPlay} = this.state;
+    return (
+      <div className="settings">
+        <div className="item">
+          <label>Auto play</label>
+          <CheckBox checked={autoPlay} onCheck={this.changeAutoPlay}/>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className="settings-container">
         {this.renderLoginForm()}
-        <div className="settings"/>
+        {this.renderSettings()}
       </div>
     );
   }

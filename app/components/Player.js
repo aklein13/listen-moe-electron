@@ -53,6 +53,10 @@ class Player extends Component<IProps, IState> {
     if (previousVolume) {
       this.setState({volume: previousVolume});
     }
+    const autoPlay = localStorage.getItem('autoPlay');
+    if (autoPlay && autoPlay === 'true') {
+      this.props.playPause();
+    }
     const login = localStorage.getItem('login');
     const token = localStorage.getItem('token');
     if (token && login) {

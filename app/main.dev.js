@@ -13,6 +13,7 @@
 import {app, BrowserWindow, globalShortcut} from 'electron';
 import MenuBuilder from './menu';
 import Server from 'electron-rpc/server';
+import { autoUpdater } from 'electron-updater'
 
 const Config = require('electron-config');
 const config = new Config();
@@ -131,4 +132,5 @@ app.on('ready', async () => {
     app.quit();
   };
   initSettings();
+  autoUpdater.checkForUpdatesAndNotify();
 });

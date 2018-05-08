@@ -108,16 +108,6 @@ export default class MenuBuilder {
         {label: 'Bring All to Front', selector: 'arrangeInFront:'}
       ]
     };
-    const subMenuHelp = {
-      label: 'Help',
-      submenu: [
-        {
-          label: 'Learn More', click() {
-            shell.openExternal('http://electron.atom.io');
-          }
-        },
-      ]
-    };
 
     const subMenuView = process.env.NODE_ENV === 'development'
       ? subMenuViewDev
@@ -128,7 +118,6 @@ export default class MenuBuilder {
       subMenuEdit,
       subMenuView,
       subMenuWindow,
-      subMenuHelp
     ];
   }
 
@@ -172,15 +161,7 @@ export default class MenuBuilder {
           this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
         }
       }]
-    }, {
-      label: 'Help',
-      submenu: [{
-        label: 'Learn More',
-        click() {
-          shell.openExternal('http://electron.atom.io');
-        }
-      },
-      ]
-    }];
+    },
+    ];
   }
 }

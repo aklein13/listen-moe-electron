@@ -42,7 +42,11 @@ export default class MenuBuilder {
     const subMenuAbout = {
       label: 'ListenMoe',
       submenu: [
-        {label: 'About ElectronReact', selector: 'orderFrontStandardAboutPanel:'},
+        {
+          label: 'About', click() {
+            shell.openExternal('https://github.com/aklein13/listen-moe-electron/');
+          }
+        },
         {type: 'separator'},
         {label: 'Services', submenu: []},
         {type: 'separator'},

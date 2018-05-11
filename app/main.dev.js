@@ -15,7 +15,6 @@ import MenuBuilder from './menu';
 import Server from 'electron-rpc/server';
 import {autoUpdater} from 'electron-updater';
 import path from 'path';
-import fs from 'fs';
 
 const Config = require('electron-config');
 const config = new Config();
@@ -26,12 +25,9 @@ let settingsWindow = null;
 const log = require('electron-log');
 
 function logger() {
-  log.transports.file.level = 'warn';
+  log.transports.file.level = 'info';
   log.transports.file.format = '{h}:{i}:{s}:{ms} {text}';
   log.transports.file.maxSize = 5 * 1024 * 1024;
-  log.transports.file.file = path.join(__dirname, '/log.txt');
-  log.transports.file.streamConfig = {flags: 'w'};
-  log.transports.file.stream = fs.createWriteStream('log.txt');
 }
 
 logger();
@@ -45,7 +41,6 @@ const isDebug = process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD
 
 if (isDebug) {
   require('electron-debug')();
-  const path = require('path');
   const p = path.join(__dirname, '..', 'app', 'node_modules');
   require('module').globalPaths.push(p);
 }
@@ -95,7 +90,9 @@ const connectAutoUpdater = () => {
   });
 };
 
-connectAutoUpdater();
+if (!isDebug) {
+  connectAutoUpdater();
+}
 
 app.on('window-all-closed', () => app.quit());
 

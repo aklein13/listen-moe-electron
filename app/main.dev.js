@@ -10,16 +10,31 @@
  *
  * @flow
  */
-import {app, BrowserWindow, globalShortcut} from 'electron';
+import {app, BrowserWindow, dialog, globalShortcut} from 'electron';
 import MenuBuilder from './menu';
 import Server from 'electron-rpc/server';
-import { autoUpdater } from 'electron-updater'
+import {autoUpdater} from 'electron-updater';
+import path from 'path';
+import fs from 'fs';
 
 const Config = require('electron-config');
 const config = new Config();
 
 let mainWindow = null;
 let settingsWindow = null;
+
+const log = require('electron-log');
+
+function logger() {
+  log.transports.file.level = 'warn';
+  log.transports.file.format = '{h}:{i}:{s}:{ms} {text}';
+  log.transports.file.maxSize = 5 * 1024 * 1024;
+  log.transports.file.file = path.join(__dirname, '/log.txt');
+  log.transports.file.streamConfig = {flags: 'w'};
+  log.transports.file.stream = fs.createWriteStream('log.txt');
+}
+
+logger();
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -42,11 +57,45 @@ const installExtensions = async () => {
     'REACT_DEVELOPER_TOOLS',
     'REDUX_DEVTOOLS',
   ];
-
   return Promise
     .all(extensions.map(name => installer.default(installer[name], forceDownload)))
     .catch(console.log);
 };
+
+const connectAutoUpdater = () => {
+  log.info('Update check start');
+  autoUpdater.autoDownload = false;
+  autoUpdater.logger = log;
+  autoUpdater.on('error', e => log.error(`update error ${e.message}`));
+  autoUpdater.on('update-available', () => {
+    log.info('Update is available');
+    autoUpdater.downloadUpdate();
+  });
+  autoUpdater.on('checking-for-update', () => log.info('checking-for-update'));
+  autoUpdater.on('update-not-available', () => log.info('update-not-available'));
+  autoUpdater.on('download-progress', progressObj => {
+    let msg = `Download speed: ${progressObj.bytesPerSecond}`;
+    msg = `${msg} - Downloaded ${progressObj.percent}%`;
+    msg = `${msg} (${progressObj.transferred}/${progressObj.total})`;
+    log.info(msg);
+  });
+  autoUpdater.on('update-downloaded', () => {
+    log.info('update-downloaded');
+    const dialogOpts = {
+      type: 'info',
+      buttons: ['Restart', 'Later'],
+      title: 'Application Update',
+      detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+    };
+    dialog.showMessageBox(dialogOpts, (response) => {
+      if (response === 0) {
+        autoUpdater.quitAndInstall();
+      }
+    });
+  });
+};
+
+connectAutoUpdater();
 
 app.on('window-all-closed', () => app.quit());
 
@@ -105,6 +154,10 @@ app.on('ready', async () => {
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
+  if (!isDebug) {
+    autoUpdater.checkForUpdates();
+  }
+
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
@@ -132,5 +185,4 @@ app.on('ready', async () => {
     app.quit();
   };
   initSettings();
-  autoUpdater.checkForUpdatesAndNotify();
 });

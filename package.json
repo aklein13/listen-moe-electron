@@ -1,7 +1,7 @@
 {
   "name": "listen-moe-electron",
   "productName": "ListenMoeElectron",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Listen.moe electrion client build in React",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
@@ -155,6 +155,7 @@
     "devtron": "^1.4.0",
     "electron-config": "^1.0.0",
     "electron-debug": "^1.5.0",
+    "electron-log": "^2.2.14",
     "electron-rpc": "^2.0.1",
     "electron-updater": "^2.21.10",
     "font-awesome": "^4.7.0",

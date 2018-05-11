@@ -43,14 +43,12 @@ export default class MenuBuilder {
       label: 'ListenMoe',
       submenu: [
         {
-          label: 'About', click() {
+          label: 'GitHub', click() {
             shell.openExternal('https://github.com/aklein13/listen-moe-electron/');
           }
         },
         {type: 'separator'},
-        {label: 'Services', submenu: []},
-        {type: 'separator'},
-        {label: 'Hide ElectronReact', accelerator: 'Command+H', selector: 'hide:'},
+        {label: 'Hide ListenMoe', accelerator: 'Command+H', selector: 'hide:'},
         {label: 'Hide Others', accelerator: 'Command+Shift+H', selector: 'hideOtherApplications:'},
         {label: 'Show All', selector: 'unhideAllApplications:'},
         {type: 'separator'},

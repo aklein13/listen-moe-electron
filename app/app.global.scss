@@ -2,7 +2,8 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome";
 @import "form-reset.css";
 
-$darkBg: #740000;
+$bgPrimary: #740000;
+$favColor: #ffc900;
 
 * {
   box-sizing: border-box;
@@ -17,7 +18,7 @@ body {
   position: relative;
   color: white;
   overflow: hidden;
-  background-color: $darkBg;
+  background-color: $bgPrimary;
   margin: 0;
 }
 
@@ -36,7 +37,7 @@ h3 {
 }
 
 #player-wrapper {
-  background: #391c1e linear-gradient(45deg, rgba(255, 0, 7, 0.5) 10%, rgba(116, 0, 0, 0.7)) no-repeat;
+  background: darken($bgPrimary, 15%) linear-gradient(45deg, opacify(lighten($bgPrimary, 10%), 0.5) 15%, opacify(darken($bgPrimary, 5%), 0.7)) no-repeat;
   height: 70px;
   position: absolute;
   display: flex;
@@ -55,7 +56,7 @@ h3 {
       color: white;
       height: 100%;
       cursor: pointer;
-      background-color: $darkBg;
+      background-color: $bgPrimary;
     }
     .song-info {
       user-select: none;
@@ -89,17 +90,18 @@ h3 {
       #fav-star {
         color: white;
         position: absolute;
-        right: 7px;
+        right: 8px;
         top: 0;
         bottom: 0;
         display: flex;
         align-items: center;
-        font-size: 26px;
+        font-size: 25px;
         cursor: pointer;
         z-index: 100;
-        transition: color 0.4s;
+        transition: color 0.5s;
         &.active {
-          color: #ffc900;
+          color: $favColor;
+          animation: faved 0.5s;
         }
       }
     }
@@ -120,7 +122,7 @@ h3 {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: $darkBg;
+  background-color: $bgPrimary;
   align-items: center;
   .panel-top {
     display: flex;
@@ -139,7 +141,7 @@ h3 {
   display: flex;
   flex: 1;
   width: 100%;
-  background-color: #4b0f10;
+  background-color: darken($bgPrimary, 6%);
   color: white;
   font-weight: bold;
   font-size: 18px;
@@ -151,7 +153,7 @@ h3 {
     cursor: pointer;
     user-select: none;
     &.active {
-      background-color: #9e0000;
+      background-color: lighten($bgPrimary, 9%);
       cursor: default;
     }
   }
@@ -207,7 +209,7 @@ h3 {
       padding: 5px;
       &:hover {
         background-color: white;
-        color: $darkBg;
+        color: $bgPrimary;
       }
     }
     ::selection {
@@ -251,5 +253,18 @@ h3 {
   100% {
     transform: translate(-100%, 0);
     animation-timing-function: linear;
+  }
+}
+
+@keyframes faved {
+  0% {
+    color: white;
+  }
+  50% {
+    transform: scale(1.4, 1.4);
+  }
+  100% {
+    color: $favColor;
+    transform: scale(1, 1);
   }
 }

@@ -48,7 +48,8 @@ class Player extends Component<IProps, IState> {
   }
 
   componentWillMount() {
-    this.props.initWs();
+    const previousChannel = localStorage.getItem('channel');
+    this.props.initWs(previousChannel || 'JP');
     const previousVolume = parseInt(localStorage.getItem('volume'));
     if (previousVolume) {
       this.setState({volume: previousVolume});

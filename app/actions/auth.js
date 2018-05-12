@@ -65,6 +65,11 @@ export const fetchFavourites = (login, token) => {
 
 export const manageFavourite = (songId, token, shouldBeFav) => {
   return (dispatch) => {
+    // Assume request won't fail to make it instant
+    dispatch({
+      type: ACTIONS.SET_FAVOURITE,
+      payload: {songId, shouldBeFav},
+    });
     const headers = new Headers(API_HEADERS);
     headers.append('Authorization', 'Bearer ' + token);
     const init = {
@@ -80,14 +85,13 @@ export const manageFavourite = (songId, token, shouldBeFav) => {
       throw new Error('Request failed.');
     })
       .catch(error => {
-        console.error('Error:', error);
-      })
-      .then(() => {
+        console.error(error);
+        alert(`Error: ${error}`);
         dispatch({
           type: ACTIONS.SET_FAVOURITE,
-          payload: {songId, shouldBeFav},
-        })
-      });
+          payload: {songId, shouldBeFav: !shouldBeFav},
+        });
+      })
   }
 };
 

@@ -58,7 +58,8 @@ export const initWs = (channel = 'JP') => {
           },
         })
       }
-    }
+    };
+    localStorage.setItem('channel', channel);
   };
 };
 

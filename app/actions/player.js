@@ -37,7 +37,6 @@ export const initWs = (channel = 'JP') => {
 
     listenMoeWs.onmessage = async (message) => {
       let response;
-      // console.log('WSMESSAGE', message);
       try {
         response = JSON.parse(message.data);
       }
@@ -45,7 +44,6 @@ export const initWs = (channel = 'JP') => {
         console.warn(error, message.data);
         return;
       }
-      // console.log('WSDATA', response);
       if (response.op === 0) {
         return setHeartbeat(response.d.heartbeat);
       }

@@ -162,7 +162,8 @@ class Player extends Component<IProps, IState> {
     if (!currentSong) {
       return (
         <div className="song-info loading">
-          <p>Loading...</p>
+          <p className="loading">Loading...</p>
+          {this.renderEventsOverlay()}
         </div>
       );
     }

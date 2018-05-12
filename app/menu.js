@@ -8,40 +8,37 @@ export default class MenuBuilder {
     this.mainWindow = mainWindow;
   }
 
-  buildMenu() {
+  buildMenu(server) {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-      this.setupDevelopmentEnvironment();
+      this.mainWindow.openDevTools();
     }
 
     const template = process.platform === 'darwin'
       ? this.buildDarwinTemplate()
       : this.buildDefaultTemplate();
 
-    const menu = Menu.buildFromTemplate(template);
-    Menu.setApplicationMenu(menu);
-    return menu;
-  }
-
-  setupDevelopmentEnvironment() {
-    this.mainWindow.openDevTools();
-    this.mainWindow.webContents.on('context-menu', (e, props) => {
-      const {x, y} = props;
-
+    this.mainWindow.webContents.on('context-menu', () => {
       Menu
         .buildFromTemplate([{
-          label: 'Inspect element',
-          click: () => {
-            this.mainWindow.inspectElement(x, y);
-          }
+          label: 'Copy song info',
+          click: () => server.send('request_song_info'),
         }])
         .popup(this.mainWindow);
     });
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+    return menu;
   }
 
   buildDarwinTemplate() {
     const subMenuAbout = {
       label: 'ListenMoe',
       submenu: [
+        {
+          label: 'ListenMoe Website', click() {
+            shell.openExternal('https://listen.moe/');
+          }
+        },
         {
           label: 'GitHub', click() {
             shell.openExternal('https://github.com/aklein13/listen-moe-electron/');
@@ -52,32 +49,27 @@ export default class MenuBuilder {
         {label: 'Hide Others', accelerator: 'Command+Shift+H', selector: 'hideOtherApplications:'},
         {label: 'Show All', selector: 'unhideAllApplications:'},
         {type: 'separator'},
-        {
-          label: 'Quit', accelerator: 'Command+Q', click: () => {
-            app.quit();
-          }
-        }
-      ]
+        {label: 'Quit', accelerator: 'Command+Q', click: () => app.quit()},
+      ],
     };
-
-    return [
-      subMenuAbout,
-    ];
+    return [subMenuAbout];
   }
 
   buildDefaultTemplate() {
     return [{
-      label: '&File',
-      submenu: [{
-        label: '&Open',
-        accelerator: 'Ctrl+O'
-      }, {
-        label: '&Close',
-        accelerator: 'Ctrl+W',
-        click: () => {
-          this.mainWindow.close();
-        }
-      }]
+      label: '&About',
+      submenu: [
+        {
+          label: 'ListenMoe', click() {
+            shell.openExternal('https://listen.moe/');
+          }
+        },
+        {
+          label: 'GitHub', click() {
+            shell.openExternal('https://github.com/aklein13/listen-moe-electron/');
+          }
+        },
+      ],
     },
     ];
   }

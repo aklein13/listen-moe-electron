@@ -10,7 +10,7 @@
  *
  * @flow
  */
-import {app, BrowserWindow, dialog, globalShortcut} from 'electron';
+import {app, BrowserWindow, dialog, globalShortcut, clipboard} from 'electron';
 import MenuBuilder from './menu';
 import Server from 'electron-rpc/server';
 import {autoUpdater} from 'electron-updater';
@@ -148,6 +148,7 @@ app.on('ready', async () => {
   server.on('open_settings', openSettings);
   server.on('logged_in', (event) => server.send('user_logged_in', event.body));
   server.on('logged_out', () => server.send('user_logged_out'));
+  server.on('copy_song_info', (event) => clipboard.writeText(event.body));
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
@@ -172,8 +173,8 @@ app.on('ready', async () => {
     app.quit();
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow, settingsWindow);
-  menuBuilder.buildMenu();
+  const menuBuilder = new MenuBuilder(mainWindow);
+  menuBuilder.buildMenu(server);
   mainWindow.closeApp = () => {
     config.set('windowBounds', mainWindow.getBounds());
     settingsWindow.on('closed', () => settingsWindow = null);

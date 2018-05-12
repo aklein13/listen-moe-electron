@@ -30,6 +30,7 @@ class Player extends Component<IProps, IState> {
     this.client = new Client();
     this.client.on('media_play', this.props.playPause);
     this.client.on('media_switch', this.switchChannel);
+    this.client.on('request_song_info', this.sendSongInfo);
     this.client.on('user_logged_out', () => this.props.logOut(true));
     this.client.on('user_logged_in', (error, body) => {
       if (!body) {
@@ -46,6 +47,15 @@ class Player extends Component<IProps, IState> {
       volume: 50,
     };
   }
+
+  sendSongInfo = () => {
+    const {currentSong} = this.props;
+    if (!currentSong) {
+      return;
+    }
+    const songText = `${currentSong.subTitle} ${currentSong.title}`;
+    this.client.request('copy_song_info', songText)
+  };
 
   componentWillMount() {
     const previousChannel = localStorage.getItem('channel');

@@ -102,7 +102,6 @@ h3 {
         &.active {
           color: $favColor;
           animation: faved 0.5s;
-          text-shadow: 0 0 30px opacify($favColor, 0.8);
         }
       }
       .loading {
@@ -264,16 +263,16 @@ h3 {
 @keyframes faved {
   0% {
     color: white;
-    text-shadow: 0 0 0 white;
+    text-shadow: none;
   }
   50% {
     transform: scale(1.4, 1.4);
     color: lighten($favColor, 10%);
-    text-shadow: 0 0 15px opacify(lighten($favColor, 10%), 0.9);
+    text-shadow: 0 0 30px opacify(lighten($favColor, 10%), 0.9);
   }
   100% {
     color: $favColor;
     transform: scale(1, 1);
-    text-shadow: 0 0 30px opacify($favColor, 0.8);
+    text-shadow: none;
   }
 }

@@ -6,7 +6,7 @@ import {playPause, initWs, stopWs} from '../actions/player';
 import {fetchFavourites, setUser, manageFavourite, logOut} from '../actions/auth';
 import {JP_STREAM, KR_STREAM} from '../actionTypes';
 import Panel from './Panel';
-import Marquee from 'marquee-react-dwyer';
+import Marquee from './Marquee';
 
 type IProps = {
   initWs: () => void,
@@ -182,11 +182,10 @@ class Player extends Component<IProps, IState> {
       <div className="song-info">
         {currentSong.subTitle.length > 25 ?
           <Marquee
-            Size="h3"
-            NumberOfOptions="1"
-            Index0={currentSong.subTitle}
-            TimeToCross="12000"
-            Color="white"
+            size="h3"
+            text={currentSong.subTitle}
+            time="12000"
+            color="white"
           />
           :
           <h3>{currentSong.subTitle}</h3>

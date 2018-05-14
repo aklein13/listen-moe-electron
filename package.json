@@ -159,7 +159,6 @@
     "electron-updater": "^2.21.10",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
-    "marquee-react-dwyer": "^5.7.9",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-hot-loader": "^4.0.0-beta.13",

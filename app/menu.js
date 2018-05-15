@@ -4,19 +4,18 @@ import {app, Menu, shell, BrowserWindow} from 'electron';
 export default class MenuBuilder {
   mainWindow: BrowserWindow;
 
-  constructor(mainWindow: BrowserWindow) {
+  constructor(mainWindow: BrowserWindow, doUpdateCheck: () => void) {
     this.mainWindow = mainWindow;
+    this.doUpdateCheck = doUpdateCheck;
   }
 
   buildMenu(server) {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
       this.mainWindow.openDevTools();
     }
-
     const template = process.platform === 'darwin'
       ? this.buildDarwinTemplate()
       : this.buildDefaultTemplate();
-
     this.mainWindow.webContents.on('context-menu', () => {
       Menu
         .buildFromTemplate([{
@@ -45,6 +44,8 @@ export default class MenuBuilder {
           }
         },
         {type: 'separator'},
+        {label: 'Check for updates', click: () => this.doUpdateCheck()},
+        {type: 'separator'},
         {label: 'Hide ListenMoe', accelerator: 'Command+H', selector: 'hide:'},
         {label: 'Hide Others', accelerator: 'Command+Shift+H', selector: 'hideOtherApplications:'},
         {label: 'Show All', selector: 'unhideAllApplications:'},
@@ -69,6 +70,8 @@ export default class MenuBuilder {
             shell.openExternal('https://github.com/aklein13/listen-moe-electron/');
           }
         },
+        {type: 'separator'},
+        {label: 'Check for updates', click: () => this.doUpdateCheck()},
       ],
     },
     ];

@@ -115,6 +115,12 @@ const openSettings = () => {
   settingsWindow.on('closed', initSettings);
 };
 
+const doUpdateCheck = () => {
+  if (!isDebug) {
+    autoUpdater.checkForUpdates();
+  }
+};
+
 app.on('ready', async () => {
   if (isDebug) {
     await installExtensions();
@@ -152,16 +158,13 @@ app.on('ready', async () => {
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
-  if (!isDebug) {
-    autoUpdater.checkForUpdates();
-  }
-
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
     mainWindow.show();
     mainWindow.focus();
+    doUpdateCheck();
   });
 
   mainWindow.on('closed', () => {
@@ -173,7 +176,7 @@ app.on('ready', async () => {
     app.quit();
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
+  const menuBuilder = new MenuBuilder(mainWindow, doUpdateCheck);
   menuBuilder.buildMenu(server);
   mainWindow.closeApp = () => {
     config.set('windowBounds', mainWindow.getBounds());

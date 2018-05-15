@@ -192,11 +192,10 @@ class Player extends Component<IProps, IState> {
         }
         {currentSong.title.length > 17 ?
           <Marquee
-            Size="h2"
-            NumberOfOptions="1"
-            Index0={currentSong.title}
-            TimeToCross="12000"
-            Color="white"
+            size="h2"
+            text={currentSong.title}
+            time="12000"
+            color="white"
           />
           :
           <h2>{currentSong.title}</h2>

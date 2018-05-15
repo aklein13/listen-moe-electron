@@ -2,10 +2,28 @@
 
 [Listen.moe](https://www.listen.moe) electron client for Windows / Mac / Linux
 
+![App](./docs/app.jpg)
+
 Based on [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate)
 
 ## Supports:
-... TODO
+- Listen to both JP and KR stream
+- Connect with Listen.moe account to manage favourites <i>(in settings)</i>
+- Play / pause / switch stream with media keys
+- Auto updates
+- Scroll to change volume
+- Right click to copy song info <i>(In format: "Artist SongName")</i>
+
+Because of how dragging and mouse events work in Electron half of the app is draggable and the other half supports 
+mouse events.
+<br/>Left side of the app lets you move it around the screen.
+<br/>Right side supports volume change by scroll, right click to copy song info, other icons clicks.
+
+These regions are highlighted on the picture bellow. Blue is for drag and orange is for other mouse events.
+
+![Mouse](./docs/mouse.jpg)
+
+I'll try to fix this in the future.
 
 ## Instructions
 ##### [Download](https://github.com/aklein13/listen-moe-electron/releases/latest) latest release for your platform
@@ -48,3 +66,4 @@ npm run package-all
 - Music visualizer
 - Window opacity
 - Fix Linux icon
+- Something with drag and scroll mouse events

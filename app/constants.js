@@ -24,3 +24,5 @@ export const API_HEADERS = {
   'Content-Type': 'application/json',
   Accept: 'application/vnd.listen.v4+json',
 };
+
+export const RETRY_TIME = 10000;

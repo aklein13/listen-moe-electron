@@ -1,5 +1,6 @@
 import Client from 'electron-rpc/client';
-import {ACTIONS, API_HEADERS, API_URL} from '../actionTypes';
+import {ACTIONS, API_HEADERS, API_URL, RETRY_TIME} from '../constants';
+import {store} from '../index';
 
 const client = new Client();
 
@@ -49,8 +50,10 @@ export const fetchFavourites = (login, token) => {
     const url = `${API_URL}favorites/${login}`;
     const request = new Request(url);
     fetch(request, init).then((response) => response.json())
-      .catch(error => {
-        console.error('Error:', error);
+      .catch((error) => {
+        console.log('Error:', error);
+        // Retry to fetch
+        setTimeout(() => fetchFavourites(login, token)(store.dispatch), RETRY_TIME);
       })
       .then((data) => {
         if (data && data.favorites) {

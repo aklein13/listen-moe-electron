@@ -1,5 +1,5 @@
-import {ACTIONS} from '../actionTypes';
-import {JP_WS, KR_WS} from '../actionTypes';
+import {ACTIONS, RETRY_TIME, KR_WS, JP_WS} from '../constants';
+import {store} from '../index';
 
 export function playPause() {
   return {type: ACTIONS.PLAY_PAUSE};
@@ -32,7 +32,9 @@ export const initWs = (channel = 'JP') => {
     };
 
     listenMoeWs.onerror = (err) => {
-      console.error(err);
+      console.log(err);
+      // Retry to connect
+      setTimeout(() => initWs(channel)(store.dispatch), RETRY_TIME);
     };
 
     listenMoeWs.onmessage = async (message) => {

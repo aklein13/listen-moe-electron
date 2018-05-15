@@ -13,7 +13,6 @@ class Marquee extends Component {
       time: 10000,
       htmlTag: 'h3',
       color: 'black',
-      totalDisplays: 1,
     };
   }
 

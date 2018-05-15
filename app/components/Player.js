@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import Client from 'electron-rpc/client';
 import {playPause, initWs, stopWs} from '../actions/player';
 import {fetchFavourites, setUser, manageFavourite, logOut} from '../actions/auth';
-import {JP_STREAM, KR_STREAM} from '../actionTypes';
+import {JP_STREAM, KR_STREAM} from '../constants';
 import Panel from './Panel';
 import Marquee from './Marquee';
 
@@ -28,7 +28,7 @@ class Player extends Component<IProps, IState> {
   constructor(props) {
     super(props);
     this.client = new Client();
-    this.client.on('media_play', this.props.playPause);
+    this.client.on('media_play', this.mediaKeyPlayPause);
     this.client.on('media_switch', this.switchChannel);
     this.client.on('request_song_info', this.sendSongInfo);
     this.client.on('user_logged_out', () => this.props.logOut(true));
@@ -47,6 +47,19 @@ class Player extends Component<IProps, IState> {
       volume: 50,
     };
   }
+
+  mediaKeyPlayPause = () => {
+    // const {currentSong, login, token} = this.props;
+    // // Retry to connect if failed
+    // if (!currentSong) {
+    //   const previousChannel = localStorage.getItem('channel');
+    //   this.props.initWs(previousChannel || 'JP');
+    //   if (token && login) {
+    //     this.props.fetchFavourites(login, token);
+    //   }
+    // }
+    this.props.playPause();
+  };
 
   sendSongInfo = () => {
     const {currentSong} = this.props;

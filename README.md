@@ -42,7 +42,7 @@ I'll try to fix this in the future.
 Or you can just `chmod +x` it.
 
 ## Dev Instruction:
-##### After downloading repository run Yarn
+##### After downloading repository run [Yarn](https://yarnpkg.com/)
 ```bash
 $ yarn
 ```
@@ -53,7 +53,7 @@ npm run dev
 ```
 - Package release for your current platform
 ```bash
-npm run dev
+npm run package
 ```
 - Package release for Windows, Mac and Linux
 ```bash

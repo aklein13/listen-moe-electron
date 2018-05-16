@@ -115,12 +115,6 @@ const openSettings = () => {
   settingsWindow.on('closed', initSettings);
 };
 
-const doUpdateCheck = () => {
-  if (!isDebug) {
-    autoUpdater.checkForUpdates();
-  }
-};
-
 app.on('ready', async () => {
   if (isDebug) {
     await installExtensions();
@@ -164,7 +158,9 @@ app.on('ready', async () => {
     }
     mainWindow.show();
     mainWindow.focus();
-    doUpdateCheck();
+    if (!isDebug) {
+      autoUpdater.checkForUpdates();
+    }
   });
 
   mainWindow.on('closed', () => {
@@ -176,7 +172,7 @@ app.on('ready', async () => {
     app.quit();
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow, doUpdateCheck);
+  const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu(server);
   mainWindow.closeApp = () => {
     config.set('windowBounds', mainWindow.getBounds());

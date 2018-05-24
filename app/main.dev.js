@@ -100,7 +100,7 @@ const initSettings = () => {
   settingsWindow = new BrowserWindow({
     show: false,
     width: 500,
-    height: 300,
+    height: 250,
     resizable: isDebug,
     maximizable: isDebug,
     fullscreenable: isDebug,

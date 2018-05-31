@@ -61,7 +61,6 @@ npm run package-all
 ```
 
 ## Todo
-- Handle network disconnect
 - Color customization
 - Music visualizer
 - Window opacity

@@ -115,6 +115,14 @@ const openSettings = () => {
   settingsWindow.on('closed', initSettings);
 };
 
+const closeApp = () => {
+  config.set('windowBounds', mainWindow.getBounds());
+  settingsWindow.on('closed', () => settingsWindow = null);
+  settingsWindow.close();
+  mainWindow.close();
+  app.quit();
+};
+
 app.on('ready', async () => {
   if (isDebug) {
     await installExtensions();
@@ -149,6 +157,7 @@ app.on('ready', async () => {
   server.on('logged_in', (event) => server.send('user_logged_in', event.body));
   server.on('logged_out', () => server.send('user_logged_out'));
   server.on('copy_song_info', (event) => clipboard.writeText(event.body));
+  server.on('close_app', closeApp);
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
@@ -174,12 +183,5 @@ app.on('ready', async () => {
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu(server);
-  mainWindow.closeApp = () => {
-    config.set('windowBounds', mainWindow.getBounds());
-    settingsWindow.on('closed', () => settingsWindow = null);
-    settingsWindow.close();
-    mainWindow.close();
-    app.quit();
-  };
   initSettings();
 });

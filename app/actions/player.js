@@ -25,8 +25,7 @@ let retryIfInactive = null;
 export const initWs = (channel = 'JP') => {
   return (dispatch) => {
     if (listenMoeWs) {
-      listenMoeWs.close();
-      clearInterval(sendHeartbeat);
+      stopWs();
     }
     listenMoeWs = new WebSocket(channel === 'JP' ? JP_WS : KR_WS);
 
@@ -87,5 +86,6 @@ export const stopWs = () => {
     clearInterval(sendHeartbeat);
     clearTimeout(retryIfInactive);
     heartbeatReceived = null;
+    listenMoeWs = null;
   }
 };

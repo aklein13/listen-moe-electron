@@ -3,10 +3,6 @@ import React, {Component} from 'react';
 import {initWs} from '../actions/player';
 import {connect} from 'react-redux';
 
-const {BrowserWindow} = window.require('electron').remote;
-let mainWindow;
-setTimeout(() => mainWindow = BrowserWindow.getFocusedWindow(), 1000);
-
 type IProps = {
   initWs: () => void,
   currentChannel: string,
@@ -28,7 +24,7 @@ class Panel extends Component<IProps> {
       <div className="panel">
         <div className="panel-top">
           <div className="fa fa-gear" onClick={this.openSettings}/>
-          <div className="fa fa-close" onClick={() => mainWindow.closeApp()}/>
+          <div className="fa fa-close" onClick={() => this.props.client.request('close_app')}/>
         </div>
         <div className="channel-switch">
           <span

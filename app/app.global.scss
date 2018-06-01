@@ -64,6 +64,9 @@ h3 {
       flex: 4;
       padding: 5px;
       overflow: hidden;
+      h3 {
+        min-height: 15px;
+      }
       .requested {
         position: absolute;
         bottom: 2px;

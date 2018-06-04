@@ -12,21 +12,15 @@ textarea
 	white-space:normal;
 	background:none;
 	line-height:1;
-
-	/* Browsers have different default form fonts */
 	font-size:13px;
 }
 
-/* Remove the stupid outer glow in Webkit */
 input:focus
 {
 	outline:0;
 }
 
-/* Box Sizing Reset
------------------------------------------------*/
 
-/* All of our custom controls should be what we expect them to be */
 input,
 textarea
 {
@@ -35,7 +29,6 @@ textarea
 	box-sizing:content-box;
 }
 
-/* These elements are usually rendered a certain way by the browser */
 button,
 input[type=reset],
 input[type=button],
@@ -48,9 +41,6 @@ select
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
 }
-
-/* Text Inputs
------------------------------------------------*/
 
 input[type=date],
 input[type=datetime],
@@ -69,8 +59,6 @@ input[type=week]
 {
 }
 
-/* Button Controls
------------------------------------------------*/
 
 input[type=checkbox],
 input[type=radio]
@@ -79,44 +67,27 @@ input[type=radio]
 	height:13px;
 }
 
-/* File Uploads
------------------------------------------------*/
-
 input[type=file]
 {
 
 }
 
-/* Search Input
------------------------------------------------*/
-
-/* Make webkit render the search input like a normal text field */
 input[type=search]
 {
 	-webkit-appearance:textfield;
 	-webkit-box-sizing:content-box;
 }
 
-/* Turn off the recent search for webkit. It adds about 15px padding on the left */
 ::-webkit-search-decoration
 {
 	display:none;
 }
 
-/* Textarea
------------------------------------------------*/
-
 textarea
 {
-	/* Move the label to the top */
 	vertical-align:top;
-
-	/* Turn off scroll bars in IE unless needed */
 	overflow:auto;
 }
-
-/* Selects
------------------------------------------------*/
 
 select
 {
@@ -125,6 +96,5 @@ select
 
 select[multiple]
 {
-	/* Move the label to the top */
 	vertical-align:top;
 }

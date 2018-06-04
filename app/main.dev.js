@@ -10,7 +10,7 @@
  *
  * @flow
  */
-import {app, BrowserWindow, dialog, globalShortcut, clipboard} from 'electron';
+import {app, BrowserWindow, dialog, globalShortcut, clipboard, nativeImage} from 'electron';
 import MenuBuilder from './menu';
 import Server from 'electron-rpc/server';
 import {autoUpdater} from 'electron-updater';
@@ -23,6 +23,9 @@ let mainWindow = null;
 let settingsWindow = null;
 
 const log = require('electron-log');
+
+const playIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gYEEw00HQDlDwAAAOpJREFUSMe11cEqxGEUhvHzN5OlKEuLKTfAwhXMio2dO7BgmpJbkJWNUjazsnEPNBtrKQuixAVMzcJGEn5WX5QFU995LuB7Ol/nvG9ERKCHR2yiFbXBlW9usFpbcO03QyxlCuADJ1jIEhResI+ZLEFhhG20swSFe6xnCgoXWMkUwCdO0ckSFF5xgNksQWGMHUxnCQqDiIipyGMUEdFOePg5IvYi4qj2F73jGPM/bbUmOI+I3aZpbmuv6R3WMg5tjP6/M2kCwRsOMVc77EocLGbE9RmWMwrnEt2M0n/ABpqapd/DE7Ymbqs/+AK1dfn3LQ3u0QAAAABJRU5ErkJggg==';
+const pauseIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gYEEw0bttHYVgAAAEJJREFUSMftzbEJACAQQ9HE/ZcRFNwu9odgGsEivzwuPEgaurdQcneUJBiRZAGsXcPjAgQIECBAgAD/AN34m4ebtduLqlmCeznqLwAAAABJRU5ErkJggg==';
 
 function logger() {
   log.transports.file.level = 'info';
@@ -159,7 +162,26 @@ app.on('ready', async () => {
   server.on('copy_song_info', (event) => clipboard.writeText(event.body));
   server.on('close_app', closeApp);
 
+  let wasPlayRequested = false;
+
+  server.on('player_change', (event) => setThumbarIcons(event.body));
+
   mainWindow.loadURL(`file://${__dirname}/app.html`);
+
+  const setThumbarIcons = (isPlaying, force) => {
+    // Prevent setting icon before window has loaded (from auto play)
+    if (!wasPlayRequested && !force) {
+      return wasPlayRequested = true;
+    }
+    wasPlayRequested = true;
+    mainWindow.setThumbarButtons([
+      {
+        tooltip: isPlaying ? 'Pause' : 'Play',
+        icon: nativeImage.createFromDataURL(isPlaying ? pauseIcon : playIcon),
+        click: () => server.send('media_play'),
+      },
+    ]);
+  };
 
   mainWindow.webContents.on('did-finish-load', () => {
     if (!mainWindow) {
@@ -167,6 +189,7 @@ app.on('ready', async () => {
     }
     mainWindow.show();
     mainWindow.focus();
+    setThumbarIcons(wasPlayRequested, true);
     if (!isDebug) {
       autoUpdater.checkForUpdates();
     }

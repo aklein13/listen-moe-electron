@@ -95,6 +95,12 @@ class Player extends Component<IProps, IState> {
     this.player.volume = (this.state.volume / 100).toFixed(2);
   }
 
+  componentWillReceiveProps(newProps) {
+    if (this.props.isPlaying !== newProps.isPlaying) {
+      this.client.request('player_change', newProps.isPlaying);
+    }
+  }
+
   componentWillUnmount() {
     this.props.stopWs();
   }

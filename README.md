@@ -66,4 +66,3 @@ npm run package-all
 - Window opacity
 - Fix Linux icon
 - Something with drag and scroll mouse events
-- Windows thumbar icos

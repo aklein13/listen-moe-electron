@@ -26,6 +26,7 @@ const log = require('electron-log');
 
 const playIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gYEEw00HQDlDwAAAOpJREFUSMe11cEqxGEUhvHzN5OlKEuLKTfAwhXMio2dO7BgmpJbkJWNUjazsnEPNBtrKQuixAVMzcJGEn5WX5QFU995LuB7Ol/nvG9ERKCHR2yiFbXBlW9usFpbcO03QyxlCuADJ1jIEhResI+ZLEFhhG20swSFe6xnCgoXWMkUwCdO0ckSFF5xgNksQWGMHUxnCQqDiIipyGMUEdFOePg5IvYi4qj2F73jGPM/bbUmOI+I3aZpbmuv6R3WMg5tjP6/M2kCwRsOMVc77EocLGbE9RmWMwrnEt2M0n/ABpqapd/DE7Ymbqs/+AK1dfn3LQ3u0QAAAABJRU5ErkJggg==';
 const pauseIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gYEEw0bttHYVgAAAEJJREFUSMftzbEJACAQQ9HE/ZcRFNwu9odgGsEivzwuPEgaurdQcneUJBiRZAGsXcPjAgQIECBAgAD/AN34m4ebtduLqlmCeznqLwAAAABJRU5ErkJggg==';
+// const appIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAEDElEQVR4nO3dPWpUURiA4S8hBJFUktpVWFlkJcHa2kKsxMolWFi7DJcgLsIqtYiEFBmLTBHSmB9m7gzv88Dhlueb5r2cKe45WK1WBwMkHS49ALAcAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYCwo6UHuOPLzLydmav14v9OZubnzLxaehD2z64F4Nn6ebxe3M/J0gOwnxwBIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIGzXbgbapouZ+TE3txHtcwhP5+ZqMHiwcgC+z8ybpYeAJe3zmw94IgGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAsPJHQeHG4fmnmfk4M782uMvxzDyfma9z/e39Bvd5EAGAmRfr58st7HW6hT3uzREAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwo6WHuCOy/Xzar025eTWXpC1awF4NzMfZuZ6w/sczmYDA3th1wJwOd7MsDX+A4AwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYCwXfsmIPvi8PzzzJzNzMXSozzR77n5HUkCwGOdzczrpYfgaRwBIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIMzNQDzW3/Xzz6JT7I/j9bpcepDbDlar1cHSQwDLcASAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAsH/bWiSVAY5ilwAAAABJRU5ErkJggg==';
 
 function logger() {
   log.transports.file.level = 'info';
@@ -144,6 +145,10 @@ app.on('ready', async () => {
     title: 'Listen.moe',
   };
 
+  // if (process.platform === 'linux') {
+  //   mainWindowConfig.icon = nativeImage.createFromDataURL(appIcon);
+  // }
+
   if (previousBounds) {
     mainWindowConfig = {...mainWindowConfig, ...previousBounds};
   }
@@ -170,7 +175,7 @@ app.on('ready', async () => {
 
   const setThumbarIcons = (isPlaying, force) => {
     // Prevent setting icon before window has loaded (from auto play)
-    if (!wasPlayRequested && !force) {
+    if (!force && !wasPlayRequested) {
       return wasPlayRequested = true;
     }
     wasPlayRequested = true;

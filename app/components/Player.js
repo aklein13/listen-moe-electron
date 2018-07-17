@@ -167,9 +167,7 @@ class Player extends Component<IProps, IState> {
     const {isPlaying} = this.props;
     const playerClass = `btn-pause-play fa fa-${isPlaying ? 'pause' : 'play'}`;
     return (
-      <div className={playerClass} onClick={() => {
-        document.documentElement.style.setProperty(`--bg-color`, 'blue');
-      }}/>
+      <div className={playerClass} onClick={this.props.playPause}/>
     )
   }
 

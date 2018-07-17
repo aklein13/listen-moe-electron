@@ -2,11 +2,20 @@ $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome";
 @import "form-reset.css";
 
-$bgPrimary: #740000;
 $favColor: #ffc900;
 
 * {
   box-sizing: border-box;
+}
+
+:root {
+  --primary: #740000;
+  --primary-d-5: #5a0000;
+  --primary-d-6: #550000;
+  --primary-d-15: #270000;
+  --primary-l-9: #a20000;
+  --primary-l-10: #a70000;
+  --text-color: white;
 }
 
 html {
@@ -16,16 +25,16 @@ html {
 body {
   font-family: Arial, Helvetica, Helvetica Neue, serif;
   position: relative;
-  color: white;
+  color: var(--text-color);
   overflow: hidden;
-  background-color: $bgPrimary;
+  background-color: var(--primary);
   margin: 0;
 }
 
 h2 {
   margin: 0;
   font-size: 2.1rem;
-  color: #fff;
+  color: var(--text-color);
 }
 
 h3 {
@@ -33,11 +42,8 @@ h3 {
   font-size: 1.5em;
 }
 
-.container {
-}
-
 #player-wrapper {
-  background: darken($bgPrimary, 15%) linear-gradient(45deg, opacify(lighten($bgPrimary, 10%), 0.5) 15%, opacify(darken($bgPrimary, 5%), 0.7)) no-repeat;
+  background: var(--primary-d-15) linear-gradient(45deg, var(--primary-l-10) 15%, var(--primary-d-5)) no-repeat;
   height: 70px;
   position: absolute;
   display: flex;
@@ -53,10 +59,10 @@ h3 {
       align-items: center;
       justify-content: center;
       font-size: 5rem;
-      color: white;
+      color: var(--text-color);
       height: 100%;
       cursor: pointer;
-      background-color: $bgPrimary;
+      background-color: var(--primary);
     }
     .song-info {
       user-select: none;
@@ -91,7 +97,7 @@ h3 {
         }
       }
       #fav-star {
-        color: white;
+        color: var(--text-color);
         position: absolute;
         right: 8px;
         top: 0;
@@ -116,7 +122,7 @@ h3 {
       position: absolute;
       bottom: 3px;
       right: 5px;
-      color: white;
+      color: var(--text-color);
       font-size: 13px;
       user-select: none;
       cursor: default;
@@ -129,7 +135,7 @@ h3 {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: $bgPrimary;
+  background-color: var(--primary);
   align-items: center;
   .panel-top {
     display: flex;
@@ -148,8 +154,8 @@ h3 {
   display: flex;
   flex: 1;
   width: 100%;
-  background-color: darken($bgPrimary, 6%);
-  color: white;
+  background-color: var(--primary-d-6);
+  color: var(--text-color);
   font-weight: bold;
   font-size: 18px;
   span {
@@ -160,14 +166,14 @@ h3 {
     cursor: pointer;
     user-select: none;
     &.active {
-      background-color: lighten($bgPrimary, 9%);
+      background-color: var(--primary-l-9);
       cursor: default;
     }
   }
 }
 
 ::-webkit-input-placeholder {
-  color: white;
+  color: var(--text-color);
 }
 
 .settings-container {
@@ -180,7 +186,7 @@ h3 {
   .login-form {
     flex: 1;
     font-size: 24px;
-    border-right: 1px solid white;
+    border-right: 1px solid var(--text-color);
     width: 50%;
     text-align: center;
     form {
@@ -199,29 +205,13 @@ h3 {
       display: none;
     }
     input {
-      color: white;
+      color: var(--text-color);
       font-size: 20px;
-      border-bottom: 1px solid white;
+      border-bottom: 1px solid var(--text-color);
       display: block;
       background-color: transparent;
       max-width: 70%;
       margin-top: 10px;
-    }
-    .button {
-      color: white;
-      cursor: pointer;
-      margin-top: 15px;
-      font-size: 20px;
-      display: inline;
-      padding: 5px;
-      &:hover {
-        background-color: white;
-        color: $bgPrimary;
-      }
-    }
-    ::selection {
-      color: white;
-      background: transparent;
     }
   }
   .settings {
@@ -230,6 +220,7 @@ h3 {
     flex-direction: column;
     padding: 25px;
     user-select: none;
+    align-items: center;
     .item {
       display: flex;
       align-items: center;
@@ -238,19 +229,64 @@ h3 {
         font-size: 20px;
         margin-right: 10px;
       }
+      &.wrap {
+        width: 80%;
+        label {
+          flex: 2;
+        }
+        input {
+          -webkit-appearance: none;
+          display: flex;
+          justify-content: center;
+          flex: 1;
+        }
+        .checkbox-container {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+        }
+      }
     }
   }
+  .button {
+    color: var(--text-color);
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 20px;
+    display: inline;
+    padding: 5px;
+    text-align: center;
+    &:hover {
+      background-color: var(--text-color);
+      color: var(--primary);
+    }
+  }
+  ::selection {
+    color: var(--text-color);
+    background: transparent;
+  }
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: 1px solid var(--text-color);
+  border-radius: 3px;
 }
 
 .checkbox {
   cursor: pointer;
-  color: white;
+  color: var(--text-color);
   width: 20px;
   height: 20px;
-  border: 1px solid white;
+  border: 1px solid var(--text-color);
   border-radius: 5px;
   text-align: center;
   font-size: 16px;
+}
+
+#marquee {
+  span {
+    color: var(--text-color) !important;
+  }
 }
 
 @keyframes marquee {
@@ -266,7 +302,7 @@ h3 {
 
 @keyframes faved {
   0% {
-    color: white;
+    color: var(--text-color);
     text-shadow: none;
   }
   50% {

@@ -12,16 +12,14 @@ class Marquee extends Component {
     this.state = {
       time: 10000,
       htmlTag: 'h3',
-      color: 'black',
     };
   }
 
   componentWillMount() {
-    const {color, size, time} = this.props;
+    const {size, time} = this.props;
     this.setState({
       crossTime: time || 10000,
       htmlTag: size || 'h3',
-      color: color || 'black'
     });
   }
 
@@ -29,13 +27,11 @@ class Marquee extends Component {
     const {text} = this.props;
     const {
       crossTime,
-      color,
     } = this.state;
     const textStyle = {
       display: 'inline-block',
       paddingLeft: '100%',
       animation: `marquee ${crossTime}ms linear infinite`,
-      color,
     };
 
     return (

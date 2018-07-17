@@ -3,6 +3,10 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {login, clearAuthError, logOut} from '../actions/auth';
 import CheckBox from './CheckBox';
+import Client from "electron-rpc/client";
+
+const primaryColor = '#740000';
+const textColor = '#ffffff';
 
 type IProps = {
   clearAuthError: () => void,
@@ -25,7 +29,10 @@ class Settings extends Component<IProps, IState> {
       password: '',
       token: null,
       autoPlay: false,
+      primaryColor,
+      textColor,
     };
+    this.client = new Client();
   }
 
   componentWillMount() {
@@ -37,6 +44,16 @@ class Settings extends Component<IProps, IState> {
     }
     if (autoPlay) {
       this.setState({autoPlay: autoPlay === 'true'});
+    }
+    const savedPrimaryColor = localStorage.getItem('primaryColor');
+    const savedTextColor = localStorage.getItem('textColor');
+    if (savedPrimaryColor) {
+      this.setState({primaryColor: savedPrimaryColor});
+      document.documentElement.style.setProperty('--primary', savedPrimaryColor);
+    }
+    if (savedTextColor) {
+      this.setState({textColor: savedTextColor});
+      document.documentElement.style.setProperty('--text-color', savedTextColor);
     }
   }
 
@@ -72,7 +89,7 @@ class Settings extends Component<IProps, IState> {
       return (
         <div className="login-form">
           <p className="logged">
-            Logged in as {login}
+            Logged in as <b>{login}</b>
           </p>
           <div className="button" onClick={this.handleLogOut}>
             Log out
@@ -114,13 +131,51 @@ class Settings extends Component<IProps, IState> {
     localStorage.setItem('autoPlay', autoPlay);
   };
 
+  resetColors = () => {
+    this.changeColor(primaryColor, 'primary');
+    this.changeColor(textColor, 'text');
+  };
+
+  changeColor = (value: string, name: string) => {
+    if (name === 'primary') {
+      this.setState({primaryColor: value});
+      document.documentElement.style.setProperty('--primary', value);
+    }
+    else {
+      this.setState({textColor: value});
+      document.documentElement.style.setProperty('--text-color', value);
+    }
+    this.client.request('color_change', {name, value});
+  };
+
   renderSettings() {
-    const {autoPlay} = this.state;
+    const {autoPlay, primaryColor, textColor} = this.state;
     return (
       <div className="settings">
-        <div className="item">
+        <div className="item wrap" style={{marginBottom: 15}}>
           <label>Auto play</label>
-          <CheckBox checked={autoPlay} onCheck={this.changeAutoPlay}/>
+          <div className="checkbox-container">
+            <CheckBox checked={autoPlay} onCheck={this.changeAutoPlay}/>
+          </div>
+        </div>
+        <div className="item wrap">
+          <label>Main color</label>
+          <input
+            type="color"
+            value={primaryColor}
+            onChange={(e) => this.changeColor(e.target.value, 'primary')}
+          />
+        </div>
+        <div className="item wrap">
+          <label>Text color</label>
+          <input
+            type="color"
+            value={textColor}
+            onChange={(e) => this.changeColor(e.target.value, 'text')}
+          />
+        </div>
+        <div className="button" onClick={this.resetColors}>
+          Reset colors
         </div>
       </div>
     )

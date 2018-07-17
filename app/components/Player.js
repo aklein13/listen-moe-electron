@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import tinycolor from 'tinycolor2';
 import {connect} from 'react-redux';
 import Client from 'electron-rpc/client';
 import {playPause, initWs, stopWs} from '../actions/player';
@@ -34,7 +35,7 @@ class Player extends Component<IProps, IState> {
     this.client.on('user_logged_out', () => this.props.logOut(true));
     this.client.on('user_logged_in', (error, body) => {
       if (!body) {
-        return;
+        return console.error(error);
       }
       const {token, login} = body;
       if (token && login) {
@@ -42,11 +43,38 @@ class Player extends Component<IProps, IState> {
         this.props.fetchFavourites(login, token);
       }
     });
+    this.client.on('color_changed', (error, body) => {
+      if (!body || error) {
+        console.log('return');
+        return console.error(error);
+      }
+      this.manageColor(body.value, body.name);
+    });
     this.player = null;
     this.state = {
       volume: 50,
     };
   }
+
+  manageColor = (value, name) => {
+    if (name === 'text') {
+      document.documentElement.style.setProperty('--text-color', value);
+      return localStorage.setItem('textColor', value);
+    }
+    let currentColor = value;
+    document.documentElement.style.setProperty('--primary', currentColor);
+    currentColor = tinycolor(value).darken(5).toString();
+    document.documentElement.style.setProperty('--primary-d-5', currentColor);
+    currentColor = tinycolor(value).darken(6).toString();
+    document.documentElement.style.setProperty('--primary-d-6', currentColor);
+    currentColor = tinycolor(value).darken(15).toString();
+    document.documentElement.style.setProperty('--primary-d-15', currentColor);
+    currentColor = tinycolor(value).lighten(9).toString();
+    document.documentElement.style.setProperty('--primary-l-9', currentColor);
+    currentColor = tinycolor(value).lighten(10).toString();
+    document.documentElement.style.setProperty('--primary-l-10', currentColor);
+    localStorage.setItem('primaryColor', value);
+  };
 
   mediaKeyPlayPause = () => {
     // const {currentSong, login, token} = this.props;
@@ -87,6 +115,10 @@ class Player extends Component<IProps, IState> {
       this.props.setUser(login, token);
       this.props.fetchFavourites(login, token);
     }
+    const savedPrimaryColor = localStorage.getItem('primaryColor');
+    savedPrimaryColor && this.manageColor(savedPrimaryColor, 'primary');
+    const savedTextColor = localStorage.getItem('textColor');
+    savedTextColor && this.manageColor(savedTextColor, 'text');
     window.addEventListener('mousewheel', this.manageScroll);
   }
 
@@ -135,7 +167,9 @@ class Player extends Component<IProps, IState> {
     const {isPlaying} = this.props;
     const playerClass = `btn-pause-play fa fa-${isPlaying ? 'pause' : 'play'}`;
     return (
-      <div className={playerClass} onClick={this.props.playPause}/>
+      <div className={playerClass} onClick={() => {
+        document.documentElement.style.setProperty(`--bg-color`, 'blue');
+      }}/>
     )
   }
 
@@ -204,7 +238,6 @@ class Player extends Component<IProps, IState> {
             size="h3"
             text={currentSong.subTitle}
             time="12000"
-            color="white"
           />
           :
           <h3>{currentSong.subTitle}</h3>

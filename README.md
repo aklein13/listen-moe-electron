@@ -10,6 +10,7 @@ Based on [electron-react-boilerplate](https://github.com/chentsulin/electron-rea
 - Listen to both JP and KR stream
 - Connect with Listen.moe account to manage favourites <i>(in settings)</i>
 - Play / pause / switch stream with media keys
+- Color customization (background / text)
 - Auto updates
 - Scroll to change volume
 - Right click to copy song info <i>(In format: "Artist SongName")</i>
@@ -61,7 +62,6 @@ npm run package-all
 ```
 
 ## Todo
-- Color customization
 - Music visualizer
 - Window opacity
 - Fix Linux icon

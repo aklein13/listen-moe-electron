@@ -1,15 +1,9 @@
 /* flowtype-errors/show-errors: 0 */
 
 /**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `npm run build` or `npm run build-main`, this file is compiled to
- * `./app/main.prod.js` using webpack. This gives us some performance wins.
- *
  * @flow
  */
+
 import {app, BrowserWindow, dialog, globalShortcut, clipboard, nativeImage} from 'electron';
 import MenuBuilder from './menu';
 import Server from 'electron-rpc/server';
@@ -26,6 +20,8 @@ const log = require('electron-log');
 
 const playIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gYEEw00HQDlDwAAAOpJREFUSMe11cEqxGEUhvHzN5OlKEuLKTfAwhXMio2dO7BgmpJbkJWNUjazsnEPNBtrKQuixAVMzcJGEn5WX5QFU995LuB7Ol/nvG9ERKCHR2yiFbXBlW9usFpbcO03QyxlCuADJ1jIEhResI+ZLEFhhG20swSFe6xnCgoXWMkUwCdO0ckSFF5xgNksQWGMHUxnCQqDiIipyGMUEdFOePg5IvYi4qj2F73jGPM/bbUmOI+I3aZpbmuv6R3WMg5tjP6/M2kCwRsOMVc77EocLGbE9RmWMwrnEt2M0n/ABpqapd/DE7Ymbqs/+AK1dfn3LQ3u0QAAAABJRU5ErkJggg==';
 const pauseIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gYEEw0bttHYVgAAAEJJREFUSMftzbEJACAQQ9HE/ZcRFNwu9odgGsEivzwuPEgaurdQcneUJBiRZAGsXcPjAgQIECBAgAD/AN34m4ebtduLqlmCeznqLwAAAABJRU5ErkJggg==';
+
+const isWindows = process.platform === 'win32';
 
 // const appIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAEDElEQVR4nO3dPWpUURiA4S8hBJFUktpVWFlkJcHa2kKsxMolWFi7DJcgLsIqtYiEFBmLTBHSmB9m7gzv88Dhlueb5r2cKe45WK1WBwMkHS49ALAcAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYCwo6UHuOPLzLydmav14v9OZubnzLxaehD2z64F4Nn6ebxe3M/J0gOwnxwBIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIGzXbgbapouZ+TE3txHtcwhP5+ZqMHiwcgC+z8ybpYeAJe3zmw94IgGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAsPJHQeHG4fmnmfk4M782uMvxzDyfma9z/e39Bvd5EAGAmRfr58st7HW6hT3uzREAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwo6WHuCOy/Xzar025eTWXpC1awF4NzMfZuZ6w/sczmYDA3th1wJwOd7MsDX+A4AwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYCwXfsmIPvi8PzzzJzNzMXSozzR77n5HUkCwGOdzczrpYfgaRwBIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIMzNQDzW3/Xzz6JT7I/j9bpcepDbDlar1cHSQwDLcASAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAsH/bWiSVAY5ilwAAAABJRU5ErkJggg==';
 
@@ -171,7 +167,9 @@ app.on('ready', async () => {
 
   let wasPlayRequested = false;
 
-  server.on('player_change', (event) => setThumbarIcons(event.body));
+  if (isWindows) {
+    server.on('player_change', (event) => setThumbarIcons(event.body));
+  }
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
@@ -196,7 +194,9 @@ app.on('ready', async () => {
     }
     mainWindow.show();
     mainWindow.focus();
-    setThumbarIcons(wasPlayRequested, true);
+    if (isWindows) {
+      setThumbarIcons(wasPlayRequested, true);
+    }
     if (!isDebug) {
       autoUpdater.checkForUpdates();
     }
@@ -210,6 +210,11 @@ app.on('ready', async () => {
     }
     app.quit();
   });
+
+  // Mac dark mode... It looks better for settings but worse for the player itself...
+  // if (systemPreferences.isDarkMode) {
+  //   systemPreferences.setAppLevelAppearance('dark');
+  // }
 
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu(server);

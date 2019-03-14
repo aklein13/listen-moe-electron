@@ -38,10 +38,7 @@ export const initWs = (channel = 'JP') => {
       console.log('Websocket connection established on ' + channel);
     };
 
-    listenMoeWs.onerror = (err) => {
-      console.log(err);
-      setTimeout(() => initWs(channel)(store.dispatch), RETRY_TIME);
-    };
+    listenMoeWs.onerror = () => setTimeout(() => initWs(channel)(store.dispatch), RETRY_TIME);
 
     listenMoeWs.onmessage = async (message) => {
       let response;

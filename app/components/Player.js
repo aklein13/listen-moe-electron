@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import Client from 'electron-rpc/client';
 import {playPause, initWs, stopWs} from '../actions/player';
 import {fetchFavourites, setUser, manageFavourite, logOut} from '../actions/auth';
-import {JP_STREAM, KR_STREAM} from '../constants';
+import {JP_STREAM, KR_STREAM, RETRY_TIME} from '../constants';
 import Panel from './Panel';
 import Marquee from './Marquee';
 
@@ -51,6 +51,7 @@ class Player extends Component<IProps, IState> {
       this.manageColor(body.value, body.name);
     });
     this.player = null;
+    this.retryTimeout = null;
     this.state = {
       volume: 50,
     };
@@ -87,6 +88,8 @@ class Player extends Component<IProps, IState> {
     //   }
     // }
     this.props.playPause();
+    clearTimeout(this.retryTimeout);
+    this.retryTimeout = null;
   };
 
   sendSongInfo = () => {
@@ -159,6 +162,8 @@ class Player extends Component<IProps, IState> {
   };
 
   switchChannel = () => {
+    clearTimeout(this.retryTimeout);
+    this.retryTimeout = null;
     const {currentChannel} = this.props;
     this.props.initWs(currentChannel === 'JP' ? 'KR' : 'JP');
   };
@@ -171,6 +176,21 @@ class Player extends Component<IProps, IState> {
     )
   }
 
+  handleRetry = () => {
+    const {isPlaying} = this.props;
+    if (isPlaying) {
+      this.mediaKeyPlayPause();
+    }
+    this.mediaKeyPlayPause();
+  };
+
+  handleError = () => {
+    const {isPlaying} = this.props;
+    if (isPlaying && !this.retryTimeout) {
+      this.retryTimeout = setTimeout(this.handleRetry, RETRY_TIME);
+    }
+  };
+
   renderAudioPlayer() {
     const {isPlaying, currentChannel} = this.props;
     let streamUrl = '';
@@ -178,7 +198,15 @@ class Player extends Component<IProps, IState> {
       streamUrl = currentChannel === 'JP' ? JP_STREAM : KR_STREAM;
     }
     return (
-      <audio autoPlay id="audio-player" crossOrigin="anonymous" preload="auto" src={streamUrl}/>
+      <audio
+        autoPlay
+        id="audio-player"
+        crossOrigin="anonymous"
+        preload="auto"
+        src={streamUrl}
+        onWaiting={this.handleError}
+        onError={this.handleError}
+      />
     );
   }
 

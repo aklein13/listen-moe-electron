@@ -25,4 +25,4 @@ export const API_HEADERS = {
   Accept: 'application/vnd.listen.v4+json',
 };
 
-export const RETRY_TIME = 10000;
+export const RETRY_TIME = 5000;

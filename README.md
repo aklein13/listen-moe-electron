@@ -42,6 +42,10 @@ I'll try to fix this in the future.
 
 Or you can just `chmod +x` it.
 
+If after going though above steps and running the application nothing happens, 
+you most likely need to install `libgtk2.0-0` package manually.
+In order to do that open your terminal and run `sudo apt-get install libgtk2.0-0`
+
 ## Dev Instruction:
 ##### After downloading repository run [Yarn](https://yarnpkg.com/)
 You need to install `node_modules` in both root directory and `./app` directory.

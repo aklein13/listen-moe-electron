@@ -16,6 +16,10 @@ const config = new Config();
 let mainWindow = null;
 let settingsWindow = null;
 
+let mainWindowSaveBoundsInterval = null;
+// Save bounds every minute
+const boundsSaveTimer = 60000;
+
 const log = require('electron-log');
 
 const playIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gYEEw00HQDlDwAAAOpJREFUSMe11cEqxGEUhvHzN5OlKEuLKTfAwhXMio2dO7BgmpJbkJWNUjazsnEPNBtrKQuixAVMzcJGEn5WX5QFU995LuB7Ol/nvG9ERKCHR2yiFbXBlW9usFpbcO03QyxlCuADJ1jIEhResI+ZLEFhhG20swSFe6xnCgoXWMkUwCdO0ckSFF5xgNksQWGMHUxnCQqDiIipyGMUEdFOePg5IvYi4qj2F73jGPM/bbUmOI+I3aZpbmuv6R3WMg5tjP6/M2kCwRsOMVc77EocLGbE9RmWMwrnEt2M0n/ABpqapd/DE7Ymbqs/+AK1dfn3LQ3u0QAAAABJRU5ErkJggg==';
@@ -95,7 +99,10 @@ if (!isDebug) {
   connectAutoUpdater();
 }
 
-app.on('window-all-closed', () => app.quit());
+app.on('window-all-closed', () => {
+  clearInterval(mainWindowSaveBoundsInterval);
+  app.quit();
+});
 
 const initSettings = () => {
   settingsWindow = new BrowserWindow({
@@ -116,8 +123,11 @@ const openSettings = () => {
   settingsWindow.on('closed', initSettings);
 };
 
+const saveMainWindowBounds = () => mainWindow && config.set('windowBounds', mainWindow.getBounds());
+
 const closeApp = () => {
-  config.set('windowBounds', mainWindow.getBounds());
+  clearInterval(mainWindowSaveBoundsInterval);
+  saveMainWindowBounds();
   settingsWindow.on('closed', () => settingsWindow = null);
   settingsWindow.close();
   mainWindow.close();
@@ -219,4 +229,5 @@ app.on('ready', async () => {
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu(server);
   initSettings();
+  mainWindowSaveBoundsInterval = setInterval(saveMainWindowBounds, boundsSaveTimer);
 });

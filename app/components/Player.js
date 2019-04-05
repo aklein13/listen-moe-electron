@@ -97,7 +97,7 @@ class Player extends Component<IProps, IState> {
     if (!currentSong) {
       return;
     }
-    const songText = `${currentSong.subTitle} ${currentSong.title}`;
+    const songText = `${(currentSong.subTitle || '').trim()} ${currentSong.title || ''}`;
     this.client.request('copy_song_info', songText)
   };
 

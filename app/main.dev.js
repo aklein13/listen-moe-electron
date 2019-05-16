@@ -4,7 +4,7 @@
  * @flow
  */
 
-import {app, BrowserWindow, dialog, globalShortcut, clipboard, nativeImage} from 'electron';
+import {app, BrowserWindow, dialog, globalShortcut, clipboard, nativeImage, shell} from 'electron';
 import MenuBuilder from './menu';
 import Server from 'electron-rpc/server';
 import {autoUpdater} from 'electron-updater';
@@ -134,6 +134,10 @@ const closeApp = () => {
   app.quit();
 };
 
+const openRegister = () => {
+  shell.openExternal('https://listen.moe/register');
+};
+
 app.on('ready', async () => {
   if (isDebug) {
     await installExtensions();
@@ -174,6 +178,7 @@ app.on('ready', async () => {
   server.on('logged_out', () => server.send('user_logged_out'));
   server.on('copy_song_info', (event) => clipboard.writeText(event.body));
   server.on('close_app', closeApp);
+  server.on('open_register', openRegister);
 
   let wasPlayRequested = false;
 

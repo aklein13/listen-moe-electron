@@ -83,6 +83,10 @@ class Settings extends Component<IProps, IState> {
     }
   };
 
+  handleRegister = () => {
+    this.client.request('open_register');
+  };
+
   renderLoginForm() {
     const {login, password, token} = this.state;
     if (token) {
@@ -119,6 +123,9 @@ class Settings extends Component<IProps, IState> {
           </button>
           <div className="button" onClick={this.handleFormSubmit}>
             Log in
+          </div>
+          <div className="button" onClick={this.handleRegister}>
+            Register
           </div>
         </form>
       </div>

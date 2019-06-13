@@ -140,6 +140,11 @@ app.on('ready', async () => {
     maximizable: isDebug,
     fullscreenable: isDebug,
     title: 'Listen.moe',
+    transparent: true,
+    titleBarStyle: 'customButtonsOnHover',
+    webPreferences: {
+      nodeIntegration: true,
+    },
   };
 
   // if (process.platform === 'linux') {

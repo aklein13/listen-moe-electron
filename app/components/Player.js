@@ -215,6 +215,7 @@ class Player extends Component<IProps, IState> {
     return (
       <span className="player-volume">
         {volume}%
+        <i className={`fa fa-volume-${volume === 0 ? 'off' : volume < 75 ? 'down' : 'up'}`}/>
       </span>
     )
   }

@@ -45,7 +45,6 @@ class Player extends Component<IProps, IState> {
     });
     this.client.on('color_changed', (error, body) => {
       if (!body || error) {
-        console.log('return');
         return console.error(error);
       }
       this.manageColor(body.value, body.name);
@@ -204,7 +203,6 @@ class Player extends Component<IProps, IState> {
         crossOrigin="anonymous"
         preload="auto"
         src={streamUrl}
-        onWaiting={this.handleError}
         onError={this.handleError}
       />
     );

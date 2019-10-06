@@ -161,7 +161,10 @@ app.on('ready', async () => {
   // }
 
   if (previousBounds) {
-    mainWindowConfig = {...mainWindowConfig, ...previousBounds};
+    mainWindowConfig = {
+      ...previousBounds,
+      ...mainWindowConfig,
+    };
   }
 
   mainWindow = new BrowserWindow(mainWindowConfig);

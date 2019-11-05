@@ -10,9 +10,11 @@ Based on [electron-react-boilerplate](https://github.com/chentsulin/electron-rea
 - Listen to both JP and KR stream
 - Connect with Listen.moe account to manage favourites <i>(in settings)</i>
 - Play / pause / switch stream with media keys
-- Color customization (background / text)
+- Color customization <i>(background / text, in settings)</i>
 - Auto updates
 - Scroll to change volume
+- Stop playing on output audio device <i>(i.e. headphones)</i> disconnect <i>(can be changed in settings)</i>
+- Auto play on app start <i>(can be changed in settings)</i>
 - Right click to copy song info <i>(In format: "Artist SongName")</i>
 
 Because of how dragging and mouse events work in Electron half of the app is draggable and the other half supports 

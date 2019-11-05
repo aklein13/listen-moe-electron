@@ -23,6 +23,7 @@ type IProps = {
 
 type IState = {
   volume: number,
+  outputDeviceLen: number,
 };
 
 class Player extends Component<IProps, IState> {
@@ -53,8 +54,31 @@ class Player extends Component<IProps, IState> {
     this.retryTimeout = null;
     this.state = {
       volume: 50,
+      outputDeviceLen: 0,
     };
+    navigator.mediaDevices.ondevicechange = this.updateDeviceList;
+    this.updateDeviceList();
   }
+
+  updateDeviceList = () => {
+    console.log('update');
+    navigator.mediaDevices.enumerateDevices()
+      .then((devices) => {
+        console.log(devices);
+        const outputDeviceLen = devices.filter((device) => device.kind === 'audiooutput').length;
+        console.log(outputDeviceLen);
+        if (outputDeviceLen < this.state.outputDeviceLen) {
+          const {isPlaying} = this.props;
+          if (isPlaying) {
+            const autoStop = localStorage.getItem('autoStop');
+            if (autoStop !== 'false') {
+              this.mediaKeyPlayPause();
+            }
+          }
+        }
+        this.setState({outputDeviceLen});
+      });
+  };
 
   manageColor = (value, name) => {
     if (name === 'text') {
@@ -97,7 +121,7 @@ class Player extends Component<IProps, IState> {
       return;
     }
     const songText = `${(currentSong.subTitle || '').trim()} ${currentSong.title || ''}`;
-    this.client.request('copy_song_info', songText)
+    this.client.request('copy_song_info', songText);
   };
 
   componentWillMount() {
@@ -108,7 +132,7 @@ class Player extends Component<IProps, IState> {
       this.setState({volume: previousVolume});
     }
     const autoPlay = localStorage.getItem('autoPlay');
-    if (autoPlay && autoPlay === 'true') {
+    if (autoPlay === 'true') {
       this.props.playPause();
     }
     const login = localStorage.getItem('login');
@@ -151,8 +175,7 @@ class Player extends Component<IProps, IState> {
       player.volume = (volume / 100).toFixed(2);
       this.setState({volume});
       localStorage.setItem('volume', volume);
-    }
-    else if (e.wheelDelta < 0 && volume >= 5) {
+    } else if (e.wheelDelta < 0 && volume >= 5) {
       volume -= 5;
       player.volume = (volume / 100).toFixed(2);
       this.setState({volume});
@@ -172,7 +195,7 @@ class Player extends Component<IProps, IState> {
     const playerClass = `btn-pause-play fa fa-${isPlaying ? 'pause' : 'play'}`;
     return (
       <div className={playerClass} onClick={this.props.playPause}/>
-    )
+    );
   }
 
   handleRetry = () => {
@@ -215,7 +238,7 @@ class Player extends Component<IProps, IState> {
         {volume}%
         <i className={`fa fa-volume-${volume === 0 ? 'off' : volume < 75 ? 'down' : 'up'}`}/>
       </span>
-    )
+    );
   }
 
   renderEventsOverlay() {
@@ -225,7 +248,7 @@ class Player extends Component<IProps, IState> {
         <div className="drag"/>
         <div className="mouse"/>
       </div>
-    )
+    );
   }
 
   renderFavouriteStar() {
@@ -283,7 +306,7 @@ class Player extends Component<IProps, IState> {
         {this.renderFavouriteStar()}
         {this.renderEventsOverlay()}
       </div>
-    )
+    );
   }
 
   render() {

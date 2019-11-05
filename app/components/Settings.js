@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {login, clearAuthError, logOut} from '../actions/auth';
 import CheckBox from './CheckBox';
-import Client from "electron-rpc/client";
+import Client from 'electron-rpc/client';
 
 const primaryColor = '#740000';
 const textColor = '#ffffff';
@@ -19,6 +19,7 @@ type IState = {
   password: string,
   token: any,
   autoPlay: boolean,
+  autoStop: boolean,
 };
 
 class Settings extends Component<IProps, IState> {
@@ -29,6 +30,7 @@ class Settings extends Component<IProps, IState> {
       password: '',
       token: null,
       autoPlay: false,
+      autoStop: true,
       primaryColor,
       textColor,
     };
@@ -39,11 +41,15 @@ class Settings extends Component<IProps, IState> {
     const previousLogin = localStorage.getItem('login');
     const previousToken = localStorage.getItem('token');
     const autoPlay = localStorage.getItem('autoPlay');
+    const autoStop = localStorage.getItem('autoStop');
     if (previousLogin) {
       this.setState({login: previousLogin, token: previousToken ? previousToken : null});
     }
     if (autoPlay) {
       this.setState({autoPlay: autoPlay === 'true'});
+    }
+    if (autoStop) {
+      this.setState({autoStop: autoStop === 'true'});
     }
     const savedPrimaryColor = localStorage.getItem('primaryColor');
     const savedTextColor = localStorage.getItem('textColor');
@@ -99,7 +105,7 @@ class Settings extends Component<IProps, IState> {
             Log out
           </div>
         </div>
-      )
+      );
     }
     return (
       <div className="login-form">
@@ -138,6 +144,12 @@ class Settings extends Component<IProps, IState> {
     localStorage.setItem('autoPlay', autoPlay);
   };
 
+  changeAutoStop = () => {
+    const autoStop = !this.state.autoStop;
+    this.setState({autoStop});
+    localStorage.setItem('autoStop', autoStop);
+  };
+
   resetColors = () => {
     this.changeColor(primaryColor, 'primary');
     this.changeColor(textColor, 'text');
@@ -147,8 +159,7 @@ class Settings extends Component<IProps, IState> {
     if (name === 'primary') {
       this.setState({primaryColor: value});
       document.documentElement.style.setProperty('--primary', value);
-    }
-    else {
+    } else {
       this.setState({textColor: value});
       document.documentElement.style.setProperty('--text-color', value);
     }
@@ -156,16 +167,22 @@ class Settings extends Component<IProps, IState> {
   };
 
   renderSettings() {
-    const {autoPlay, primaryColor, textColor} = this.state;
+    const {autoPlay, autoStop, primaryColor, textColor} = this.state;
     return (
       <div className="settings">
-        <div className="item wrap" style={{marginBottom: 15}}>
+        <div className="item wrap">
           <label>Auto play</label>
           <div className="checkbox-container">
             <CheckBox checked={autoPlay} onCheck={this.changeAutoPlay}/>
           </div>
         </div>
         <div className="item wrap">
+          <label>Stop on audio device disconnect</label>
+          <div className="checkbox-container">
+            <CheckBox checked={autoStop} onCheck={this.changeAutoStop}/>
+          </div>
+        </div>
+        <div className="item wrap" style={{marginTop: 15}}>
           <label>Main color</label>
           <input
             type="color"
@@ -185,7 +202,7 @@ class Settings extends Component<IProps, IState> {
           Reset colors
         </div>
       </div>
-    )
+    );
   }
 
   render() {

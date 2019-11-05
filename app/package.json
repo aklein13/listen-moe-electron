@@ -1,7 +1,7 @@
 {
   "name": "listen-moe-electron",
   "productName": "ListenMoeElectron",
-  "version": "0.6.15",
+  "version": "0.6.16",
   "description": "Listen.moe electron client build in React",
   "main": "./main.prod.js",
   "author": {

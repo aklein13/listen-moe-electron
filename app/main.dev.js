@@ -16,6 +16,8 @@ const config = new Config();
 let mainWindow = null;
 let settingsWindow = null;
 
+const UPDATE_INTERVAL = 3 * 3600 * 1000;
+let updateInterval = null;
 let mainWindowSaveBoundsInterval = null;
 // Save bounds every minute
 const boundsSaveTimer = 60000;
@@ -32,7 +34,7 @@ const isWindows = process.platform === 'win32';
 function logger() {
   log.transports.file.level = 'info';
   log.transports.file.format = '{h}:{i}:{s}:{ms} {text}';
-  log.transports.file.maxSize = 5 * 1024 * 1024;
+  log.transports.file.maxSize = 3 * 1024 * 1024;
 }
 
 logger();
@@ -63,24 +65,13 @@ const installExtensions = async () => {
 };
 
 const connectAutoUpdater = () => {
-  log.info('Update check start');
   autoUpdater.autoDownload = false;
   autoUpdater.logger = log;
   autoUpdater.on('error', e => log.error(`update error ${e.message}`));
   autoUpdater.on('update-available', () => {
-    log.info('Update is available');
     autoUpdater.downloadUpdate();
   });
-  autoUpdater.on('checking-for-update', () => log.info('checking-for-update'));
-  autoUpdater.on('update-not-available', () => log.info('update-not-available'));
-  autoUpdater.on('download-progress', progressObj => {
-    let msg = `Download speed: ${progressObj.bytesPerSecond}`;
-    msg = `${msg} - Downloaded ${progressObj.percent}%`;
-    msg = `${msg} (${progressObj.transferred}/${progressObj.total})`;
-    log.info(msg);
-  });
   autoUpdater.on('update-downloaded', () => {
-    log.info('update-downloaded');
     const dialogOpts = {
       type: 'info',
       buttons: ['Restart', 'Later'],
@@ -107,8 +98,8 @@ app.on('window-all-closed', () => {
 const initSettings = () => {
   settingsWindow = new BrowserWindow({
     show: false,
-    width: 500,
-    height: 250,
+    width: 600,
+    height: 320,
     resizable: isDebug,
     maximizable: isDebug,
     fullscreenable: isDebug,
@@ -215,9 +206,6 @@ app.on('ready', async () => {
     if (isWindows) {
       setThumbarIcons(wasPlayRequested, true);
     }
-    if (!isDebug) {
-      autoUpdater.checkForUpdates();
-    }
   });
 
   mainWindow.on('closed', () => {
@@ -238,4 +226,8 @@ app.on('ready', async () => {
   menuBuilder.buildMenu(server);
   initSettings();
   mainWindowSaveBoundsInterval = setInterval(saveMainWindowBounds, boundsSaveTimer);
+  if (!isDebug) {
+    await autoUpdater.checkForUpdates();
+    updateInterval = setInterval(() => autoUpdater.checkForUpdates(), UPDATE_INTERVAL);
+  }
 });

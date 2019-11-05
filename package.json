@@ -1,7 +1,7 @@
 {
   "name": "listen-moe-electron",
   "productName": "ListenMoeElectron",
-  "version": "0.6.16",
+  "version": "0.6.17",
   "description": "Listen.moe electron client build in React",
   "scripts": {
     "build": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
@@ -11,7 +11,7 @@
     "dev": "cross-env START_HOT=1 node -r babel-register ./internals/scripts/CheckPortInUse.js && cross-env START_HOT=1 npm run start-renderer-dev",
     "electron-rebuild": "electron-rebuild --parallel --force --types prod,dev,optional --module-dir app",
     "flow": "flow",
-    "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
+    "flow-typed": "rimraf flow-typed/npm",
     "package": "npm run build && electron-builder",
     "package-all": "npm run build && electron-builder -mwl --publish never",
     "ship": "npm run build && electron-builder -mwl --publish always",
@@ -119,7 +119,7 @@
     "css-loader": "^1.0.0",
     "detect-port": "^1.2.2",
     "electron": "^1.8.8",
-    "electron-builder": "^22.1.0",
+    "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^2.2.3",
     "electron-rebuild": "^1.7.3",
     "express": "^4.16.2",

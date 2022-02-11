@@ -129,6 +129,7 @@
     "flow-bin": "^0.84.0",
     "flow-runtime": "^0.17.0",
     "flow-typed": "^2.5.1",
+    "graphql-tag": "^2.12.6",
     "identity-obj-proxy": "^3.0.0",
     "minimist": "^1.2.0",
     "node-sass": "^4.12.0",
@@ -146,6 +147,8 @@
     "webpack-merge": "^4.1.1"
   },
   "dependencies": {
+    "@apollo/client": "^3.5.8",
+    "core-js": "^3.21.0",
     "devtron": "^1.4.0",
     "electron-config": "^1.0.0",
     "electron-debug": "^1.5.0",
@@ -153,6 +156,7 @@
     "electron-rpc": "^2.0.1",
     "electron-updater": "^2.21.10",
     "font-awesome": "^4.7.0",
+    "graphql": "15",
     "history": "^4.7.2",
     "react": "^16.6.0",
     "react-dom": "^16.6.0",

@@ -111,9 +111,9 @@ class Settings extends Component<IProps, IState> {
       <div className="login-form">
         <form onSubmit={this.handleFormSubmit}>
           <input
-            placeholder="Login"
+            placeholder="Email"
             name="Login"
-            type="text"
+            type="email"
             value={login}
             onChange={(e) => this.handleFormChange(e, 'login')}
           />

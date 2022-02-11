@@ -1,30 +1,45 @@
 import Client from 'electron-rpc/client';
 import {ACTIONS, API_HEADERS, API_URL, RETRY_TIME} from '../constants';
 import {store} from '../index';
+import {
+  ApolloClient,
+  InMemoryCache,
+} from "@apollo/client";
+import loginQuery from "../gql/login.gql";
 
-const client = new Client();
+const rpcClient = new Client();
+
+const apolloOptions = {
+  watchQuery: {
+    fetchPolicy: 'no-cache',
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+  },
+};
+const apolloClient = new ApolloClient({
+  uri: 'https://listen.moe/graphql',
+  cache: new InMemoryCache(),
+  defaultOptions: apolloOptions,
+});
 
 export const login = (login, password) => {
   return (dispatch) => {
-    const headers = new Headers(API_HEADERS);
-    const body = {
+    const variables = {
       username: login,
       password,
     };
-    const init = {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body),
-    };
-    const url = API_URL + 'login';
-    const request = new Request(url);
-    fetch(request, init).then((response) => response.json())
-      .catch(error => {
-        alert('Network request failed');
-        console.error('Error:', error);
+    apolloClient
+      .query({
+        query: loginQuery,
+        variables,
       })
-      .then((data) => {
-        const {token} = data;
+      .catch(error => {
+        console.error('Error:', error)
+        return dispatch({type: ACTIONS.LOGIN_ERROR});
+      })
+      .then(({data}) => {
+        const {token} = data.login;
         if (!token) {
           return dispatch({type: ACTIONS.LOGIN_ERROR});
         }
@@ -34,7 +49,7 @@ export const login = (login, password) => {
         });
         localStorage.setItem('login', login);
         localStorage.setItem('token', token);
-        client.request('logged_in', {login, token});
+        rpcClient.request('logged_in', {login, token});
       });
   }
 };
@@ -44,7 +59,6 @@ export const fetchFavourites = (login, token) => {
     const headers = new Headers(API_HEADERS);
     headers.append('Authorization', 'Bearer ' + token);
     const init = {
-      method: 'GET',
       headers,
     };
     const url = `${API_URL}favorites/${login}`;
@@ -111,7 +125,7 @@ export function setUser(login, token) {
 
 export function logOut(fromPlayer = false) {
   if (!fromPlayer) {
-    client.request('logged_out');
+    rpcClient.request('logged_out');
     localStorage.setItem('token', '');
   }
   return {type: ACTIONS.LOG_OUT};

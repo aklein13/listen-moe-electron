@@ -38,10 +38,10 @@ class Player extends Component<IProps, IState> {
       if (!body) {
         return console.error(error);
       }
-      const {token, login} = body;
-      if (token && login) {
+      const {token, login, username} = body;
+      if (token && login && username) {
         this.props.setUser(login, token);
-        this.props.fetchFavourites(login, token);
+        this.props.fetchFavourites(username);
       }
     });
     this.client.on('color_changed', (error, body) => {
@@ -61,12 +61,9 @@ class Player extends Component<IProps, IState> {
   }
 
   updateDeviceList = () => {
-    console.log('update');
     navigator.mediaDevices.enumerateDevices()
       .then((devices) => {
-        console.log(devices);
         const outputDeviceLen = devices.filter((device) => device.kind === 'audiooutput').length;
-        console.log(outputDeviceLen);
         if (outputDeviceLen < this.state.outputDeviceLen) {
           const {isPlaying} = this.props;
           if (isPlaying) {
@@ -137,9 +134,10 @@ class Player extends Component<IProps, IState> {
     }
     const login = localStorage.getItem('login');
     const token = localStorage.getItem('token');
-    if (token && login) {
+    const username = localStorage.getItem('username');
+    if (token && login && username) {
       this.props.setUser(login, token);
-      this.props.fetchFavourites(login, token);
+      this.props.fetchFavourites(username);
     }
     const savedPrimaryColor = localStorage.getItem('primaryColor');
     savedPrimaryColor && this.manageColor(savedPrimaryColor, 'primary');

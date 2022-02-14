@@ -28,7 +28,11 @@ export default function auth(state = {...initialState}, action: any) {
       };
     case ACTIONS.LOAD_FAVOURITES:
       const loadedFavourites = {};
-      action.payload.favourites.forEach((fav) => loadedFavourites[fav.id] = true);
+      action.payload.favourites.forEach((fav) => {
+        if (fav.song) {
+          loadedFavourites[fav.song.id] = true;
+        }
+      });
       return {
         ...state,
         favourites: loadedFavourites,

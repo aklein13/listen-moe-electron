@@ -1,11 +1,9 @@
 import Client from 'electron-rpc/client';
-import {ACTIONS, API_HEADERS, API_URL, RETRY_TIME} from '../constants';
-import {store} from '../index';
-import {
-  ApolloClient,
-  InMemoryCache,
-} from "@apollo/client";
-import loginQuery from "../gql/login.gql";
+import { ACTIONS, API_HEADERS, API_URL } from '../constants';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+import loginQuery from '../gql/login.gql';
+import userQuery from '../gql/user.gql';
+import { setContext } from '@apollo/client/link/context';
 
 const rpcClient = new Client();
 
@@ -17,67 +15,73 @@ const apolloOptions = {
     fetchPolicy: 'no-cache',
   },
 };
-const apolloClient = new ApolloClient({
+const httpLink = createHttpLink({
   uri: 'https://listen.moe/graphql',
+});
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+});
+const apolloClient = new ApolloClient({
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
   defaultOptions: apolloOptions,
 });
 
 export const login = (login, password) => {
   return (dispatch) => {
-    const variables = {
-      username: login,
-      password,
-    };
     apolloClient
       .query({
         query: loginQuery,
-        variables,
+        variables: {
+          username: login,
+          password,
+        },
       })
-      .catch(error => {
-        console.error('Error:', error)
-        return dispatch({type: ACTIONS.LOGIN_ERROR});
+      .catch((error) => {
+        console.error('Error:', error);
+        return dispatch({ type: ACTIONS.LOGIN_ERROR });
       })
-      .then(({data}) => {
-        const {token} = data.login;
+      .then(({ data }) => {
+        const { token, user } = data.login;
         if (!token) {
-          return dispatch({type: ACTIONS.LOGIN_ERROR});
+          return dispatch({ type: ACTIONS.LOGIN_ERROR });
         }
+        localStorage.setItem('token', token);
+        apolloClient.resetStore();
+        const { username } = user;
         dispatch({
           type: ACTIONS.LOGIN_SUCCESS,
-          payload: {token, login},
+          payload: { token, login, username },
         });
-        localStorage.setItem('login', login);
         localStorage.setItem('token', token);
-        rpcClient.request('logged_in', {login, token});
+        localStorage.setItem('username', username);
+        rpcClient.request('logged_in', { login, token, username });
       });
-  }
+  };
 };
 
-export const fetchFavourites = (login, token) => {
+export const fetchFavourites = (username) => {
   return (dispatch) => {
-    const headers = new Headers(API_HEADERS);
-    headers.append('Authorization', 'Bearer ' + token);
-    const init = {
-      headers,
-    };
-    const url = `${API_URL}favorites/${login}`;
-    const request = new Request(url);
-    fetch(request, init).then((response) => response.json())
-      .catch((error) => {
-        console.log('Error:', error);
-        // Retry to fetch
-        setTimeout(() => fetchFavourites(login, token)(store.dispatch), RETRY_TIME);
+    apolloClient
+      .query({
+        query: userQuery,
+        variables: {
+          username,
+        },
       })
-      .then((data) => {
-        if (data && data.favorites) {
-          dispatch({
-            type: ACTIONS.LOAD_FAVOURITES,
-            payload: {favourites: data.favorites},
-          })
-        }
+      .then(({ data }) => {
+        dispatch({
+          type: ACTIONS.LOAD_FAVOURITES,
+          payload: { favourites: data.user.favorites.favorites },
+        });
       });
-  }
+  };
 };
 
 export const manageFavourite = (songId, token, shouldBeFav) => {
@@ -85,7 +89,7 @@ export const manageFavourite = (songId, token, shouldBeFav) => {
     // Assume request won't fail to make it instant
     dispatch({
       type: ACTIONS.SET_FAVOURITE,
-      payload: {songId, shouldBeFav},
+      payload: { songId, shouldBeFav },
     });
     const headers = new Headers(API_HEADERS);
     headers.append('Authorization', 'Bearer ' + token);
@@ -95,38 +99,40 @@ export const manageFavourite = (songId, token, shouldBeFav) => {
     };
     const url = `${API_URL}favorites/${songId}`;
     const request = new Request(url);
-    fetch(request, init).then((response) => {
-      if (response.ok) {
-        return true;
-      }
-      throw new Error('Request failed.');
-    })
-      .catch(error => {
+    fetch(request, init)
+      .then((response) => {
+        if (response.ok) {
+          return true;
+        }
+        throw new Error('Request failed.');
+      })
+      .catch((error) => {
         console.error(error);
         alert(`Error: ${error}`);
         dispatch({
           type: ACTIONS.SET_FAVOURITE,
-          payload: {songId, shouldBeFav: !shouldBeFav},
+          payload: { songId, shouldBeFav: !shouldBeFav },
         });
-      })
-  }
+      });
+  };
 };
 
 export function clearAuthError() {
-  return {type: ACTIONS.CLEAR_ERROR}
+  return { type: ACTIONS.CLEAR_ERROR };
 }
 
 export function setUser(login, token) {
   return {
     type: ACTIONS.SET_USER,
-    payload: {token, login},
-  }
+    payload: { token, login },
+  };
 }
 
 export function logOut(fromPlayer = false) {
   if (!fromPlayer) {
+    localStorage.removeItem('token');
+    apolloClient.resetStore();
     rpcClient.request('logged_out');
-    localStorage.setItem('token', '');
   }
-  return {type: ACTIONS.LOG_OUT};
+  return { type: ACTIONS.LOG_OUT };
 }

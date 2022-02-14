@@ -1,0 +1,5 @@
+mutation favorite($id: Int!) {
+	favoriteSong(id: $id) {
+		id
+	}
+}

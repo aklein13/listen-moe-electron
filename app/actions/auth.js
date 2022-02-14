@@ -1,8 +1,9 @@
 import Client from 'electron-rpc/client';
-import { ACTIONS, API_HEADERS, API_URL } from '../constants';
+import { ACTIONS } from '../constants';
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import loginQuery from '../gql/login.gql';
 import userQuery from '../gql/user.gql';
+import favoriteQuery from '../gql/favorite.gql';
 import { setContext } from '@apollo/client/link/context';
 
 const rpcClient = new Client();
@@ -91,22 +92,17 @@ export const manageFavourite = (songId, token, shouldBeFav) => {
       type: ACTIONS.SET_FAVOURITE,
       payload: { songId, shouldBeFav },
     });
-    const headers = new Headers(API_HEADERS);
-    headers.append('Authorization', 'Bearer ' + token);
-    const init = {
-      method: shouldBeFav ? 'POST' : 'DELETE',
-      headers,
-    };
-    const url = `${API_URL}favorites/${songId}`;
-    const request = new Request(url);
-    fetch(request, init)
-      .then((response) => {
-        if (response.ok) {
-          return true;
-        }
-        throw new Error('Request failed.');
-      })
-      .catch((error) => {
+     apolloClient
+       .query({
+         query: favoriteQuery,
+         variables: { id: songId },
+       }).then((response) => {
+       if (response.ok) {
+         return true;
+      }
+      throw new Error('Request failed.');
+    })
+      .catch(error => {
         console.error(error);
         alert(`Error: ${error}`);
         dispatch({

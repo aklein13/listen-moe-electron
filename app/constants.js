@@ -18,11 +18,6 @@ export const KR_WS = 'wss://listen.moe/kpop/gateway_v2';
 
 export const CDN = 'https://cdn.listen.moe/covers/';
 
-export const API_URL = 'https://listen.moe/api/';
-
-export const API_HEADERS = {
-  'Content-Type': 'application/json',
-  Accept: 'application/vnd.listen.v4+json',
-};
+export const GRAPHQL_URL = 'https://listen.moe/graphql';
 
 export const RETRY_TIME = 5000;

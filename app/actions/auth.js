@@ -1,5 +1,5 @@
 import Client from 'electron-rpc/client';
-import { ACTIONS } from '../constants';
+import { ACTIONS, GRAPHQL_URL } from '../constants';
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import loginQuery from '../gql/login.gql';
 import userQuery from '../gql/user.gql';
@@ -17,7 +17,7 @@ const apolloOptions = {
   },
 };
 const httpLink = createHttpLink({
-  uri: 'https://listen.moe/graphql',
+  uri: GRAPHQL_URL,
 });
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('token');
@@ -35,7 +35,7 @@ const apolloClient = new ApolloClient({
 });
 
 export const login = (login, password) => {
-  return (dispatch) => {
+  return dispatch => {
     apolloClient
       .query({
         query: loginQuery,
@@ -44,7 +44,7 @@ export const login = (login, password) => {
           password,
         },
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Error:', error);
         return dispatch({ type: ACTIONS.LOGIN_ERROR });
       })
@@ -67,8 +67,8 @@ export const login = (login, password) => {
   };
 };
 
-export const fetchFavourites = (username) => {
-  return (dispatch) => {
+export const fetchFavourites = username => {
+  return dispatch => {
     apolloClient
       .query({
         query: userQuery,
@@ -86,22 +86,18 @@ export const fetchFavourites = (username) => {
 };
 
 export const manageFavourite = (songId, token, shouldBeFav) => {
-  return (dispatch) => {
+  return dispatch => {
     // Assume request won't fail to make it instant
     dispatch({
       type: ACTIONS.SET_FAVOURITE,
       payload: { songId, shouldBeFav },
     });
-     apolloClient
-       .query({
-         query: favoriteQuery,
-         variables: { id: songId },
-       }).then((response) => {
-       if (response.ok) {
-         return true;
-      }
-      throw new Error('Request failed.');
-    })
+    apolloClient
+      .query({
+        query: favoriteQuery,
+        variables: { id: songId },
+      })
+      .then(() => {})
       .catch(error => {
         console.error(error);
         alert(`Error: ${error}`);

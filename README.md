@@ -70,7 +70,7 @@ yarn package-all
 ```
 
 ## Todo
+- Album covers somewhere
 - Music visualizer
 - Window opacity
 - Fix Linux icon
-- Something with drag and scroll mouse events

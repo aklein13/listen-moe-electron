@@ -28,6 +28,7 @@ const playIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADg
 const pauseIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4gYEEw0bttHYVgAAAEJJREFUSMftzbEJACAQQ9HE/ZcRFNwu9odgGsEivzwuPEgaurdQcneUJBiRZAGsXcPjAgQIECBAgAD/AN34m4ebtduLqlmCeznqLwAAAABJRU5ErkJggg==';
 
 const isWindows = process.platform === 'win32';
+const isMac = process.platform === 'darwin';
 
 // const appIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAAEDElEQVR4nO3dPWpUURiA4S8hBJFUktpVWFlkJcHa2kKsxMolWFi7DJcgLsIqtYiEFBmLTBHSmB9m7gzv88Dhlueb5r2cKe45WK1WBwMkHS49ALAcAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYCwo6UHuOPLzLydmav14v9OZubnzLxaehD2z64F4Nn6ebxe3M/J0gOwnxwBIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIGzXbgbapouZ+TE3txHtcwhP5+ZqMHiwcgC+z8ybpYeAJe3zmw94IgGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAsPJHQeHG4fmnmfk4M782uMvxzDyfma9z/e39Bvd5EAGAmRfr58st7HW6hT3uzREAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwgQAwo6WHuCOy/Xzar025eTWXpC1awF4NzMfZuZ6w/sczmYDA3th1wJwOd7MsDX+A4AwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYAwAYCwXfsmIPvi8PzzzJzNzMXSozzR77n5HUkCwGOdzczrpYfgaRwBIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIEwAIMzNQDzW3/Xzz6JT7I/j9bpcepDbDlar1cHSQwDLcASAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAMAGAsH/bWiSVAY5ilwAAAABJRU5ErkJggg==';
 
@@ -67,9 +68,22 @@ const installExtensions = async () => {
 const connectAutoUpdater = () => {
   autoUpdater.autoDownload = false;
   autoUpdater.logger = log;
-  autoUpdater.on('error', e => log.error(`update error ${e.message}`));
+  autoUpdater.on('error', e => log.error(`Update error ${e.message}`));
   autoUpdater.on('update-available', () => {
-    autoUpdater.downloadUpdate();
+    if (isMac) {
+      dialog.showMessageBox({
+        type: 'info',
+        buttons: ['Close', 'Download'],
+        title: 'cp-clip',
+        detail: 'Update is available to download from GitHub.',
+      }, (response) => {
+        if (response) {
+          shell.openExternal('https://github.com/aklein13/listen-moe-electron/releases/latest');
+        }
+      });
+    } else {
+      autoUpdater.downloadUpdate();
+    }
   });
   autoUpdater.on('update-downloaded', () => {
     const dialogOpts = {
@@ -228,6 +242,8 @@ app.on('ready', async () => {
   mainWindowSaveBoundsInterval = setInterval(saveMainWindowBounds, boundsSaveTimer);
   if (!isDebug) {
     await autoUpdater.checkForUpdates();
-    updateInterval = setInterval(() => autoUpdater.checkForUpdates(), UPDATE_INTERVAL);
+    if (!isMac) {
+      updateInterval = setInterval(() => autoUpdater.checkForUpdates(), UPDATE_INTERVAL);
+    }
   }
 });

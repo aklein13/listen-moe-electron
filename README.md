@@ -6,6 +6,10 @@
 
 Based on [electron-react-boilerplate](https://github.com/chentsulin/electron-react-boilerplate)
 
+# Updates
+The app supports automatic updates except for Mac.
+Updates do not work on unsigned applications and Mac certificates are paid.
+
 ## Supports:
 - Listen to both JP and KR stream
 - Connect with Listen.moe account to manage favourites <i>(in settings)</i>

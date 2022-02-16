@@ -77,7 +77,6 @@ class Settings extends Component<IProps, IState> {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    e.stopPropagation();
     this.props.login(this.state.login, this.state.password);
   };
 
@@ -111,10 +110,11 @@ class Settings extends Component<IProps, IState> {
       <div className="login-form">
         <form onSubmit={this.handleFormSubmit}>
           <input
-            placeholder="Email"
+            placeholder="Login"
             name="Login"
-            type="email"
+            type="text"
             value={login}
+            required
             onChange={(e) => this.handleFormChange(e, 'login')}
           />
           <input
@@ -122,6 +122,7 @@ class Settings extends Component<IProps, IState> {
             name="Password"
             type="password"
             value={password}
+            required
             onChange={(e) => this.handleFormChange(e, 'password')}
           />
           <button type="submit">

@@ -60,7 +60,7 @@ export const login = (login, password) => {
           type: ACTIONS.LOGIN_SUCCESS,
           payload: { token, login, username },
         });
-        localStorage.setItem('token', token);
+        localStorage.setItem('login', login);
         localStorage.setItem('username', username);
         rpcClient.request('logged_in', { login, token, username });
       });

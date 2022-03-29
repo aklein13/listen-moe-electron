@@ -105,6 +105,8 @@ export const manageFavourite = (songId, token, shouldBeFav) => {
           type: ACTIONS.SET_FAVOURITE,
           payload: { songId, shouldBeFav: !shouldBeFav },
         });
+        dispatch(logOut());
+        rpcClient.request('reset_settings');
       });
   };
 };

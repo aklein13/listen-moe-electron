@@ -43,7 +43,7 @@ class Settings extends Component<IProps, IState> {
     const autoPlay = localStorage.getItem('autoPlay');
     const autoStop = localStorage.getItem('autoStop');
     if (previousLogin) {
-      this.setState({login: previousLogin, token: previousToken ? previousToken : null});
+      this.setState({login: previousLogin, token: previousToken || null});
     }
     if (autoPlay) {
       this.setState({autoPlay: autoPlay === 'true'});

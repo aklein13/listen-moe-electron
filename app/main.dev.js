@@ -184,6 +184,10 @@ app.on('ready', async () => {
   server.on('logged_in', (event) => server.send('user_logged_in', event.body));
   server.on('color_change', (event) => server.send('color_changed', event.body));
   server.on('logged_out', () => server.send('user_logged_out'));
+  server.on('reset_settings', () => {
+    settingsWindow.close();
+    initSettings();
+  });
   server.on('copy_song_info', (event) => clipboard.writeText(event.body));
   server.on('close_app', closeApp);
   server.on('open_register', openRegister);

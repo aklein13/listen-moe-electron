@@ -119,7 +119,7 @@
     "css-loader": "^1.0.0",
     "detect-port": "^1.2.2",
     "electron": "^1.8.8",
-    "electron-builder": "^21.2.0",
+    "electron-builder": "^23.0.3",
     "electron-devtools-installer": "^2.2.3",
     "electron-rebuild": "^1.7.3",
     "express": "^4.16.2",
@@ -132,11 +132,11 @@
     "graphql-tag": "^2.12.6",
     "identity-obj-proxy": "^3.0.0",
     "minimist": "^1.2.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.14.1",
     "npm-logical-tree": "^1.2.1",
     "redux-logger": "^3.0.6",
     "rimraf": "^2.6.2",
-    "sass-loader": "^7.1.0",
+    "sass-loader": "^7.3.1",
     "style-loader": "^0.20.1",
     "stylefmt": "^6.0.0",
     "uglifyjs-webpack-plugin": "1.1.8",
@@ -171,8 +171,7 @@
     "tinycolor2": "^1.4.1"
   },
   "devEngines": {
-    "node": ">=8.x",
-    "npm": ">=4.x",
-    "yarn": ">=0.21.3"
+    "node": "=14.x",
+    "yarn": ">=1.22.x"
   }
 }
